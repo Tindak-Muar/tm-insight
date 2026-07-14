@@ -32,6 +32,7 @@ export default function MarkasPage() {
           Strategis AI akan menyediakan ringkasan harian secara automatik.
         </p>
       </div>
+
 <div className="rounded-xl border bg-white p-6 shadow-sm">
   <h2 className="text-xl font-semibold mb-4">
     📋 Aktiviti Terkini
@@ -42,6 +43,30 @@ export default function MarkasPage() {
     <li>📡 Tiada kemas kini daripada Radar.</li>
     <li>🤖 Tiada analisis baharu daripada Strategis AI.</li>
   </ul>
+</div>
+
+<div className="rounded-xl border bg-white p-6 shadow-sm">
+  <h2 className="text-xl font-semibold mb-4">
+    📅 Tugasan Hari Ini
+  </h2>
+
+  <ul className="space-y-3">
+    <li>☐ Kemaskini Khazanah Politik</li>
+    <li>☐ Semak Radar</li>
+    <li>☐ Jana Ringkasan AI</li>
+  </ul>
+</div>
+
+<div className="rounded-xl border bg-white p-6 shadow-sm">
+  <h2 className="text-xl font-semibold mb-4">
+    📊 Status Sistem
+  </h2>
+
+  <div className="space-y-2 text-gray-600">
+    <p>🟢 TM Insight Online</p>
+    <p>🟢 Strategis AI Bersedia</p>
+    <p>🟢 Radar Aktif</p>
+  </div>
 </div>
     </div>
   );
