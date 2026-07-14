@@ -12,10 +12,10 @@ export default function MarkasPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-6">
-        <DashboardCard title="Berita" value="120" />
-        <DashboardCard title="Radar" value="35" />
-        <DashboardCard title="Dokumen" value="56" />
-        <DashboardCard title="Strategis AI" value="8" />
+       <DashboardCard title="Berita" value={120} />
+<DashboardCard title="Radar" value={35} />
+<DashboardCard title="Dokumen" value={56} />
+<DashboardCard title="Strategis AI" value={8} />
       </div>
 
       <div className="rounded-xl border bg-white p-6 shadow-sm">
