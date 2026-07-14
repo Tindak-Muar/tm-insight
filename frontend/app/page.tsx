@@ -1,26 +1,29 @@
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
+import DashboardCard from "../components/DashboardCard";
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-100 flex items-center justify-center">
-      <div className="bg-white shadow-xl rounded-2xl p-10 text-center w-[700px]">
+    <main className="min-h-screen bg-gray-100">
+      <Header />
 
-        <h1 className="text-5xl font-bold text-blue-700">
-          TM Insight
-        </h1>
+      <div className="flex">
+        <Sidebar />
 
-        <p className="text-xl mt-3 text-gray-600">
-          Political Intelligence Platform
-        </p>
+        <section className="flex-1 p-8">
+          <h2 className="text-4xl font-bold mb-2">Dashboard</h2>
 
-        <p className="mt-8 text-gray-500">
-          Developed by Tindak Muar
-        </p>
+          <p className="text-gray-500 mb-8">
+            Selamat datang ke TM Insight.
+          </p>
 
-        <div className="mt-10">
-          <button className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-lg">
-            Enter Dashboard
-          </button>
-        </div>
-
+          <div className="grid grid-cols-4 gap-6">
+            <DashboardCard title="Berita" value={0} />
+            <DashboardCard title="Kenyataan Media" value={0} />
+            <DashboardCard title="Dokumen" value={0} />
+            <DashboardCard title="Policy Brief" value={0} />
+          </div>
+        </section>
       </div>
     </main>
   );
