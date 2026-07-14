@@ -29,3 +29,13 @@ Semua perubahan penting bagi TM Insight akan direkodkan dalam fail ini.
 - Landing Page
 - Git Workflow
 - Initial Project Structure
+
+✅ Foundation
+✅ Layout
+✅ Routing
+✅ Markas MVP
+
+⬜ Khazanah Politik
+⬜ Radar
+⬜ Risikan Politik
+⬜ Strategis AI

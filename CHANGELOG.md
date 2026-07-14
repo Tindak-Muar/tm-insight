@@ -29,3 +29,21 @@ Semua perubahan penting bagi TM Insight akan direkodkan dalam fail ini.
 - Landing Page
 - Git Workflow
 - Initial Project Structure
+
+## v0.4.1 (14 Julai 2026)
+
+### Added
+- Shared Layout
+- Sidebar Navigation
+- Active Menu Highlight
+- Markas MVP
+- Branding TM Insight
+
+### Improved
+- Application Metadata
+- Sidebar Footer
+- Project Identity
+
+### Fixed
+- TypeScript errors
+- Layout routing issues
