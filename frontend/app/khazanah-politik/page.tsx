@@ -1,152 +1,374 @@
-import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+
+import StatsCards from "@/components/khazanah/StatsCards";
+import SuccessAlert from "@/components/khazanah/SuccessAlert";
+import Toolbar from "@/components/khazanah/Toolbar";
+import AssetsTable from "@/components/khazanah/AssetsTable";
+import SearchBar from "@/components/khazanah/SearchBar";
+import Pagination from "@/components/khazanah/Pagination";
+import { buildKhazanahQuery } from "@/lib/khazanah/query";
 
 type PageProps = {
-  searchParams?: {
+  searchParams: Promise<{
     success?: string;
-  };
+    q?: string;
+    category?: string;
+    status?: string;
+    state?: string;
+    year?: string;
+    sort?: string;
+    page?: string;
+  }>;
 };
 
-export default function KhazanahPolitikPage({
+export default async function KhazanahPolitikPage({
   searchParams,
 }: PageProps) {
-  const assets = [
-    {
-      title: "Rancangan Malaysia Ke-13 (RMK13)",
-      category: "Dasar",
-      status: "Aktif",
-      date: "14 Julai 2026",
-    },
-    {
-      title: "Johor-Singapore Special Economic Zone (JS-SEZ)",
-      category: "Ekonomi",
-      status: "Aktif",
-      date: "12 Julai 2026",
-    },
-    {
-      title: "Forest City",
-      category: "Pelaburan",
-      status: "Arkib",
-      date: "10 Julai 2026",
-    },
-  ];
+  const params = await searchParams;
 
-  return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold">
-          📚 Khazanah Politik
-        </h1>
+  const keyword = params.q ?? "";
+  const category = params.category ?? "";
+  const status = params.status ?? "";
+  const state = params.state ?? "";
+  const year = params.year ?? "";
+  const sort = params.sort ?? "latest";
 
-        <p className="mt-2 text-gray-500">
-          Repositori aset pengetahuan untuk dasar, manifesto,
-          penyelidikan, ucapan, media dan dokumen strategik.
-        </p>
-      </div>
+  const currentPage = Number(
+    params.page ?? "1"
+  );
 
-      {/* Success Message */}
-      {searchParams?.success === "1" && (
-        <div className="rounded-xl border border-green-300 bg-green-50 p-4 text-green-700">
-          ✅ Aset pengetahuan berjaya disimpan.
-        </div>
-      )}
+  const pageSize = 20;
 
-      {/* Statistik */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="rounded-xl border bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Jumlah Aset</p>
-          <h2 className="mt-2 text-3xl font-bold">3</h2>
-        </div>
+  const skip =
+    (currentPage - 1) * pageSize;
 
-        <div className="rounded-xl border bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Aktif</p>
-          <h2 className="mt-2 text-3xl font-bold text-green-600">2</h2>
-        </div>
+   /* ==========================================================
+   QUERY 1
+   Ambil SEMUA aset untuk dropdown & statistik
+========================================================== */
+const { where, orderBy } = buildKhazanahQuery({
+  keyword,
+  category,
+  status,
+  state,
+  year,
+  sort,
+});
 
-        <div className="rounded-xl border bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Arkib</p>
-          <h2 className="mt-2 text-3xl font-bold text-gray-600">1</h2>
-        </div>
+const allAssets =
+  await prisma.knowledgeAsset.findMany();
+/* ==========================================================
+   QUERY 2
+========================================================== */
 
-        <div className="rounded-xl border bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Kategori</p>
-          <h2 className="mt-2 text-3xl font-bold">3</h2>
-        </div>
-      </div>
+const assets =
+  await prisma.knowledgeAsset.findMany({
+    where,
+    orderBy,
+    skip,
+    take: pageSize,
+  });
 
-      {/* Toolbar */}
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
-        <div className="flex items-center gap-4">
-          <select className="rounded-lg border px-4 py-2">
-            <option>Semua Kategori</option>
-            <option>Dasar</option>
-            <option>Ekonomi</option>
-            <option>Pelaburan</option>
-            <option>Manifesto</option>
-            <option>Penyelidikan</option>
-          </select>
+const totalAssets =
+  await prisma.knowledgeAsset.count({
+    where,
+  });
 
-          <input
-            type="text"
-            placeholder="🔍 Cari aset pengetahuan..."
-            className="flex-1 rounded-lg border px-4 py-2"
+const totalPages = Math.ceil(
+  totalAssets / pageSize
+);
+
+/* ==========================================================
+   Statistik
+========================================================== */
+
+const jumlahAset = allAssets.length;
+
+const jumlahAktif = allAssets.filter(
+  (asset) => asset.status === "Aktif"
+).length;
+
+const jumlahArkib = allAssets.filter(
+  (asset) => asset.status === "Arkib"
+).length;
+
+const jumlahKategori = new Set(
+  allAssets.map(
+    (asset) => asset.category
+  )
+).size;
+
+const jumlahInstitusi = new Set(
+  allAssets
+    .map(
+      (asset) => asset.institution
+    )
+    .filter(
+      (
+        institution
+      ): institution is string =>
+        Boolean(institution)
+    )
+).size;
+
+const jumlahAktifRepo =
+  jumlahAktif;
+
+const jumlahDraf = allAssets.filter(
+  (asset) => asset.status === "Draf"
+).length;
+
+const jumlahSemakan =
+  allAssets.filter(
+    (asset) =>
+      asset.status ===
+      "Dalam Semakan"
+  ).length;
+
+const jumlahArkibRepo =
+  jumlahArkib;
+
+const asetTerakhir =
+  allAssets.length > 0
+    ? allAssets.reduce((latest, asset) =>
+        asset.updatedAt >
+        latest.updatedAt
+          ? asset
+          : latest
+      )
+    : null;
+
+const tarikhKemaskini =
+  asetTerakhir
+    ? asetTerakhir.updatedAt.toLocaleDateString(
+        "ms-MY",
+        {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        }
+      )
+    : "-";
+
+/* ==========================================================
+   Dropdown
+========================================================== */
+
+const categories = [
+  ...new Set(
+    allAssets.map(
+      (asset) => asset.category
+    )
+  ),
+].sort();
+
+const states = [
+  ...new Set(
+    allAssets
+      .map((asset) => asset.state)
+      .filter(
+        (
+          state
+        ): state is string =>
+          Boolean(state)
+      )
+  ),
+].sort();
+
+const years = [
+  ...new Set(
+    allAssets
+      .map((asset) => asset.year)
+      .filter(
+        (
+          year
+        ): year is number =>
+          year !== null
+      )
+  ),
+].sort((a, b) => b - a); 
+
+return (
+  <div className="space-y-8">
+
+    {/* Header */}
+    <div>
+
+      <h1 className="text-4xl font-bold">
+        📚 Khazanah Politik
+      </h1>
+
+      <p className="mt-2 text-gray-500">
+        Repositori aset pengetahuan untuk dasar,
+        manifesto, penyelidikan, ucapan, media
+        dan dokumen strategik.
+      </p>
+
+      {/* Quick Insights */}
+      <div className="mt-6 rounded-xl border bg-gradient-to-r from-slate-50 to-blue-50 p-5">
+
+        <h2 className="mb-4 text-lg font-semibold">
+          📊 Quick Insights
+        </h2>
+
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+
+          <Insight
+            icon="📄"
+            label="Jumlah Aset"
+            value={jumlahAset}
           />
 
-          <Link
-            href="/khazanah-politik/tambah"
-            className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700"
-          >
-            + Tambah Aset
-          </Link>
+          <Insight
+            icon="🟢"
+            label="Aktif"
+            value={jumlahAktifRepo}
+          />
+
+          <Insight
+            icon="🟡"
+            label="Draf"
+            value={jumlahDraf}
+          />
+
+          <Insight
+            icon="🔵"
+            label="Dalam Semakan"
+            value={jumlahSemakan}
+          />
+
+          <Insight
+            icon="⚫"
+            label="Arkib"
+            value={jumlahArkibRepo}
+          />
+
+          <Insight
+            icon="🗂️"
+            label="Kategori"
+            value={jumlahKategori}
+          />
+
+          <Insight
+            icon="🏛️"
+            label="Institusi"
+            value={jumlahInstitusi}
+          />
+
+          <Insight
+            icon="📅"
+            label="Aset Terakhir Dikemas Kini"
+            value={tarikhKemaskini}
+          />
+
         </div>
+
       </div>
 
-      {/* Jadual */}
-      <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr className="border-b">
-              <th className="px-6 py-4 text-left">Aset Pengetahuan</th>
-              <th className="px-6 py-4 text-left">Kategori</th>
-              <th className="px-6 py-4 text-left">Status</th>
-              <th className="px-6 py-4 text-left">Tarikh</th>
-            </tr>
-          </thead>
+    </div>
 
-          <tbody>
-            {assets.map((asset) => (
-              <tr
-                key={asset.title}
-                className="border-b hover:bg-gray-50"
-              >
-                <td className="px-6 py-4 font-medium">
-                  {asset.title}
-                </td>
+    {/* Success Alert */}
+    <SuccessAlert
+      show={params.success === "1"}
+    />
 
-                <td className="px-6 py-4">
-                  {asset.category}
-                </td>
+    {/* Statistik */}
+    <StatsCards
+      total={jumlahAset}
+      aktif={jumlahAktif}
+      arkib={jumlahArkib}
+      kategori={jumlahKategori}
+    />
 
-                <td className="px-6 py-4">
-                  {asset.status === "Aktif" ? (
-                    <span className="rounded-full bg-green-100 px-3 py-1 text-sm text-green-700">
-                      Aktif
-                    </span>
-                  ) : (
-                    <span className="rounded-full bg-gray-200 px-3 py-1 text-sm text-gray-700">
-                      Arkib
-                    </span>
-                  )}
-                </td>
+    {/* Search */}
+    <SearchBar />
 
-                <td className="px-6 py-4 text-gray-500">
-                  {asset.date}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    {/* Toolbar */}
+    <Toolbar
+      categories={categories}
+      states={states}
+      years={years}
+    />
+
+    {/* Jadual */}
+    <AssetsTable
+      assets={assets}
+    />
+
+    {/* Footer Jadual */}
+    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+      <p className="text-sm text-gray-500">
+
+        Menunjukkan{" "}
+
+        <strong>
+          {assets.length === 0
+            ? 0
+            : skip + 1}
+        </strong>
+
+        {" "}hingga{" "}
+
+        <strong>
+          {Math.min(
+            skip + assets.length,
+            totalAssets
+          )}
+        </strong>
+
+        {" "}daripada{" "}
+
+        <strong>
+          {totalAssets}
+        </strong>
+
+        {" "}aset
+
+      </p>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+
+    </div>
+
+  </div>
+);
+
+}
+
+type InsightProps = {
+  icon: string;
+  label: string;
+  value: string | number;
+};
+
+function Insight({
+  icon,
+  label,
+  value,
+}: InsightProps) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+
+      <div className="flex items-center justify-between">
+
+        <span className="text-3xl">
+          {icon}
+        </span>
+
+        <span className="text-2xl font-bold text-slate-800">
+          {value}
+        </span>
+
       </div>
+
+      <p className="mt-3 text-sm font-medium text-slate-500">
+        {label}
+      </p>
+
     </div>
   );
 }

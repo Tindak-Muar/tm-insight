@@ -1,0 +1,246 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+
+import { prisma } from "@/lib/prisma";
+import DeleteButton from "@/components/khazanah/DeleteButton";
+
+type Props = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+export default async function AssetDetailPage({
+  params,
+}: Props) {
+  const { id } = await params;
+
+  const asset = await prisma.knowledgeAsset.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+
+  if (!asset) {
+    notFound();
+  }
+
+  return (
+    <div className="space-y-8">
+
+      {/* Header */}
+
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+
+        <div>
+
+          <h1 className="text-4xl font-bold">
+            {asset.title}
+          </h1>
+
+          <p className="mt-2 text-gray-500">
+            Khazanah Politik
+          </p>
+
+        </div>
+
+        <span
+  className={`rounded-full px-4 py-2 text-sm font-medium ${
+    asset.status === "Aktif"
+      ? "bg-green-100 text-green-700"
+      : asset.status === "Draf"
+      ? "bg-yellow-100 text-yellow-700"
+      : asset.status === "Dalam Semakan"
+      ? "bg-sky-100 text-sky-700"
+      : "bg-gray-200 text-gray-700"
+  }`}
+>
+              {asset.status}
+        </span>
+
+      </div>
+
+      {/* Maklumat */}
+
+<div className="rounded-xl border bg-white p-8 shadow-sm">
+
+  <h2 className="mb-6 text-2xl font-semibold">
+    ℹ️ Maklumat Aset
+  </h2>
+
+  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+    <Info
+      label="Kategori"
+      value={asset.category}
+    />
+
+    <Info
+      label="Subkategori"
+      value={asset.subcategory}
+    />
+
+    <Info
+      label="Institusi"
+      value={asset.institution}
+    />
+
+    <Info
+      label="Negeri"
+      value={asset.state}
+    />
+
+    <Info
+      label="Tahun"
+      value={asset.year?.toString()}
+    />
+
+    <Info
+      label="Penulis"
+      value={asset.author}
+    />
+
+    <Info
+      label="Tarikh Terbit"
+      value={
+        asset.publishedAt
+          ? asset.publishedAt.toLocaleDateString("ms-MY")
+          : "-"
+      }
+    />
+
+  </div>
+
+</div>
+
+      {/* Ringkasan */}
+
+      <div className="rounded-xl border bg-white p-8 shadow-sm">
+
+        <h2 className="mb-4 text-2xl font-semibold">
+          📝 Ringkasan
+        </h2>
+
+        <p className="leading-8 whitespace-pre-line">
+          {asset.summary || "-"}
+        </p>
+
+      </div>
+
+      {/* Kandungan */}
+
+      <div className="rounded-xl border bg-white p-8 shadow-sm">
+
+        <h2 className="mb-4 text-2xl font-semibold">
+          📄 Kandungan
+        </h2>
+
+        <div className="leading-8 whitespace-pre-line">
+          {asset.content || "-"}
+        </div>
+
+      </div>
+
+      {/* Metadata */}
+
+      <div className="rounded-xl border bg-white p-8 shadow-sm">
+
+        <h2 className="mb-4 text-2xl font-semibold">
+          🏷️ Metadata
+        </h2>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+          <Info
+            label="Tag"
+            value={asset.tags}
+          />
+
+<Info
+  label="Sumber"
+  value={asset.source}
+/>
+
+          <Info
+            label="URL"
+            value={asset.url}
+          />
+
+          <Info
+  label="Fail"
+  value={asset.filePath}
+/>
+
+          <Info
+  label="Tarikh Daftar"
+  value={asset.createdAt.toLocaleString("ms-MY")}
+/>
+
+<Info
+  label="Tarikh Dikemas Kini"
+  value={asset.updatedAt.toLocaleString("ms-MY")}
+/>
+
+<div className="md:col-span-2">
+  <Info
+    label="ID Aset"
+    value={asset.id.toString()}
+  />
+</div>
+      
+    </div>
+
+    </div>
+
+      {/* Button */}
+
+      <div className="flex flex-col gap-3 md:flex-row">
+
+  <Link
+    href="/khazanah-politik"
+    className="rounded-lg border px-6 py-3"
+  >
+    ← Kembali
+  </Link>
+
+  <Link
+    href={`/khazanah-politik/${asset.id}/edit`}
+    className="rounded-lg bg-blue-600 px-6 py-3 text-white"
+  >
+    ✏️ Pinda
+  </Link>
+
+  <DeleteButton
+  id={asset.id}
+  redirect
+/>
+
+</div>
+
+    </div>
+  );
+}
+
+type InfoProps = {
+  label: string;
+  value?: string | null;
+};
+
+function Info({
+  label,
+  value,
+}: InfoProps) {
+  return (
+    <div>
+
+      <p className="text-sm text-gray-500">
+        {label}
+      </p>
+
+      <p className="mt-1 font-medium">
+        {value || "-"}
+      </p>
+
+    </div>
+  );
+}

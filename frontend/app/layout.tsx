@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
+import Header from "../components/layout/Header";
+import Sidebar from "../components/layout/Sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,23 +17,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "TM Insight",
-    template: "%s | TM Insight",
-  },
-  description:
-    "Platform risikan politik berasaskan data, media dan AI untuk analisis strategik di Malaysia.",
-  applicationName: "TM Insight",
+  default: "SINAR",
+  template: "%s | SINAR",
+},
+description:
+  "Strategi • Impak • Naratif • Analitik • Risikan",
+applicationName: "SINAR",
   authors: [{ name: "Tindak Muar" }],
   keywords: [
-    "TM Insight",
-    "Political Intelligence",
-    "Risikan Politik",
-    "Malaysia",
-    "Data Analytics",
-    "Media Intelligence",
-    "AI",
-    "Strategi Politik",
-  ],
+  "SINAR",
+  "Political Intelligence",
+  "Knowledge Management",
+  "AI",
+  "Malaysia",
+]
 };
 
 export default function RootLayout({

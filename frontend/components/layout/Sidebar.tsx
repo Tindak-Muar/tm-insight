@@ -18,9 +18,15 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-gray-100 min-h-screen p-6 border-r flex flex-col">
       <div>
-        <h2 className="font-bold text-lg mb-6">TM Insight</h2>
+  <h2 className="text-2xl font-bold tracking-wide text-blue-700">
+    SINAR
+  </h2>
 
-        <ul className="space-y-3">
+  <p className="mb-6 mt-1 text-xs leading-5 text-gray-500">
+    Empowering Smarter Political Decisions
+  </p>
+
+  <ul className="space-y-3">
           {menus.map((menu) => (
             <li key={menu.href}>
               <Link
@@ -40,11 +46,11 @@ export default function Sidebar() {
 
       <div className="mt-auto pt-6 border-t text-sm text-gray-500">
         <p className="font-semibold">Versi</p>
-        <p>v0.4.0</p>
+        <p>SINAR v0.1 Alpha</p>
 
         <div className="mt-4">
-          <p className="font-semibold">Stage 1</p>
-          <p>30% Siap</p>
+          <p className="font-semibold">Alpha Build</p>
+          <p>Core Platform</p>
         </div>
       </div>
     </aside>

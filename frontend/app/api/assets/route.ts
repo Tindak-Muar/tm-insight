@@ -31,11 +31,32 @@ export async function POST(request: Request) {
     const asset = await prisma.knowledgeAsset.create({
       data: {
         title: body.title,
+
         category: body.category,
+        subcategory: body.subcategory,
+
+        institution: body.institution,
+        state: body.state,
+
+        year: body.year,
+
+        author: body.author,
+
         summary: body.summary,
+        content: body.content,
+
         source: body.source,
+        url: body.url,
+
         tags: body.tags,
+
         status: body.status,
+
+        publishedAt: body.publishedAt
+          ? new Date(body.publishedAt)
+          : null,
+
+        filePath: null,
       },
     });
 

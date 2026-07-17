@@ -1,5 +1,4 @@
-import DashboardCard from "@/components/DashboardCard";
-
+import DashboardCard from "@/components/dashboard/DashboardCard";
 export default function MarkasPage() {
   return (
     <div className="space-y-8">
@@ -7,7 +6,7 @@ export default function MarkasPage() {
       <div>
         <h1 className="text-4xl font-bold">🏛️ Markas</h1>
         <p className="text-gray-500 mt-2">
-          Selamat datang ke TM Insight.
+          Selamat datang ke SINAR.
         </p>
       </div>
 
@@ -24,7 +23,7 @@ export default function MarkasPage() {
         </h2>
 
         <p className="text-gray-600 leading-7">
-          Selamat datang ke TM Insight.
+          Selamat datang ke SINAR.
           <br /><br />
           Tiada ringkasan tersedia buat masa ini.
           <br />
@@ -63,7 +62,7 @@ export default function MarkasPage() {
   </h2>
 
   <div className="space-y-2 text-gray-600">
-    <p>🟢 TM Insight Online</p>
+    <p>🟢 SINAR Online</p>
     <p>🟢 Strategis AI Bersedia</p>
     <p>🟢 Radar Aktif</p>
   </div>
