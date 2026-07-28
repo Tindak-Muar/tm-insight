@@ -1,8 +1,15 @@
 "use client";
 
+import { useCallback, useState } from "react";
+
 import { useRouter } from "next/navigation";
 
-type Props = {
+import { Trash2 } from "lucide-react";
+
+import api from "@/lib/api/client";
+import Button from "@/components/ui/Button";
+
+type DeleteButtonProps = {
   id: number;
   redirect?: boolean;
 };
@@ -10,43 +17,65 @@ type Props = {
 export default function DeleteButton({
   id,
   redirect = false,
-}: Props) {
+}: DeleteButtonProps) {
   const router = useRouter();
 
-  async function handleDelete() {
-    const ok = confirm(
-      "Adakah anda pasti mahu memadam aset ini?"
-    );
+  const [loading, setLoading] =
+    useState(false);
 
-    if (!ok) return;
+  const handleDelete = useCallback(
+    async () => {
+      const confirmed = window.confirm(
+        "Adakah anda pasti mahu memadam aset ini?"
+      );
 
-    const response = await fetch(
-      `/api/assets/${id}`,
-      {
-        method: "DELETE",
+      if (!confirmed || loading) {
+        return;
       }
-    );
 
-    if (!response.ok) {
-      alert("Gagal memadam aset.");
-      return;
-    }
+      try {
+        setLoading(true);
 
-    alert("Aset berjaya dipadam.");
+        const result =
+          await api.delete(
+            `/api/khazanah-politik/${id}`
+          );
 
-    if (redirect) {
-      router.push("/khazanah-politik");
-    }
+       if (!result.success) {
+  window.alert(result.message);
+  return;
+}
 
-    router.refresh();
-  }
+        if (redirect) {
+          router.push(
+            "/khazanah-politik"
+          );
+          return;
+        }
+
+        router.refresh();
+      } catch {
+        window.alert(
+          "Ralat semasa memadam aset."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [id, loading, redirect, router]
+  );
 
   return (
-    <button
+    <Button
+      variant="destructive"
+      size="sm"
+      icon={Trash2}
+      disabled={loading}
       onClick={handleDelete}
-      className="rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
     >
-      🗑️ Padam
-    </button>
+      {loading
+        ? "Memadam..."
+        : "Padam"}
+    </Button>
   );
 }

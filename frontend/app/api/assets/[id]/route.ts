@@ -1,23 +1,22 @@
-import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
-};
+import { generateSlug } from "@/lib/slug";
+import { validateKnowledgeAsset } from "@/lib/validation";
+import {
+  successResponse,
+  errorResponse,
+} from "@/lib/api-response";
 
 // =========================
-// GET SATU ASET
+// GET /api/assets/[id]
 // =========================
 
 export async function GET(
   request: Request,
-  { params }: Props
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-
   try {
+    const { id } = await params;
+
     const asset = await prisma.knowledgeAsset.findUnique({
       where: {
         id: Number(id),
@@ -25,123 +24,133 @@ export async function GET(
     });
 
     if (!asset) {
-      return NextResponse.json(
-        {
-          message: "Aset tidak dijumpai.",
-        },
-        {
-          status: 404,
-        }
+      return errorResponse(
+        "Aset tidak dijumpai.",
+        404
       );
     }
 
-    return NextResponse.json(asset);
+    return successResponse(
+      asset,
+      "Maklumat aset berjaya diperoleh."
+    );
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json(
-      {
-        message: "Gagal mendapatkan aset.",
-      },
-      {
-        status: 500,
-      }
+    return errorResponse(
+      "Gagal mendapatkan maklumat aset."
     );
   }
 }
 
 // =========================
-// KEMASKINI ASET
+// PUT /api/assets/[id]
 // =========================
 
 export async function PUT(
   request: Request,
-  { params }: Props
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-
   try {
+    const { id } = await params;
+
     const body = await request.json();
 
-    const asset = await prisma.knowledgeAsset.update({
+    const validation =
+      validateKnowledgeAsset(body);
+
+    if (validation) {
+      return errorResponse(validation, 400);
+    }
+
+    const asset = await prisma.knowledgeAsset.findUnique({
       where: {
         id: Number(id),
       },
-
-      data: {
-        title: body.title,
-
-        category: body.category,
-        subcategory: body.subcategory,
-
-        institution: body.institution,
-        state: body.state,
-
-        year: body.year,
-
-        author: body.author,
-
-        summary: body.summary,
-        content: body.content,
-
-        source: body.source,
-        url: body.url,
-
-        tags: body.tags,
-
-        status: body.status,
-
-        publishedAt: body.publishedAt
-          ? new Date(body.publishedAt)
-          : null,
-      },
     });
 
-    return NextResponse.json(asset);
-  } catch (error) {
-    console.error(error);
+    if (!asset) {
+      return errorResponse(
+        "Aset tidak dijumpai.",
+        404
+      );
+    }
 
-    return NextResponse.json(
-      {
-        message: "Gagal meminda aset.",
-      },
-      {
-        status: 500,
-      }
+    let slug = asset.slug;
+
+    if (asset.title !== body.title) {
+      const baseSlug = generateSlug(body.title);
+
+      const existing =
+        await prisma.knowledgeAsset.findFirst({
+          where: {
+            slug: baseSlug,
+            NOT: {
+              id: asset.id,
+            },
+          },
+        });
+
+      slug = existing
+        ? `${baseSlug}-${Date.now()}`
+        : baseSlug;
+    }
+
+    const updated =
+      await prisma.knowledgeAsset.update({
+        where: {
+          id: asset.id,
+        },
+        data: {
+          title: body.title,
+          slug,
+
+          category: body.category,
+          subcategory:
+            body.subcategory || null,
+
+          institution:
+            body.institution || null,
+
+          state:
+            body.state || null,
+
+          year: body.year
+            ? Number(body.year)
+            : null,
+
+          author:
+            body.author || null,
+
+          summary:
+            body.summary || null,
+
+          content:
+            body.content || null,
+
+          source:
+            body.source || null,
+
+          sourceUrl:
+            body.sourceUrl || null,
+
+          sourceReference:
+            body.sourceReference || null,
+
+          tags:
+            body.tags || null,
+        },
+      });
+
+    return successResponse(
+      updated,
+      "Aset berjaya dikemas kini."
     );
-  }
-}
-
-// =========================
-// PADAM ASET
-// =========================
-
-export async function DELETE(
-  request: Request,
-  { params }: Props
-) {
-  const { id } = await params;
-
-  try {
-    await prisma.knowledgeAsset.delete({
-      where: {
-        id: Number(id),
-      },
-    });
-
-    return NextResponse.json({
-      message: "Aset berjaya dipadam.",
-    });
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json(
-      {
-        message: "Gagal memadam aset.",
-      },
-      {
-        status: 500,
-      }
+    return errorResponse(
+      "Gagal mengemas kini aset."
     );
   }
 }

@@ -5,12 +5,44 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
+import {
+  Download,
+  Plus,
+  RotateCcw,
+} from "lucide-react";
+
+import Button from "@/components/ui/Button";
+import Select from "@/components/ui/Select";
 
 type ToolbarProps = {
   categories: string[];
   states: string[];
   years: number[];
 };
+
+const BASE_ROUTE = "/khazanah-politik";
+
+const exportOptions = [
+  {
+    label: "Export CSV",
+    format: "csv",
+  },
+  {
+    label: "Export Excel",
+    format: "excel",
+  },
+  {
+    label: "Export PDF",
+    format: "pdf",
+  },
+];
 
 export default function Toolbar({
   categories,
@@ -20,198 +52,271 @@ export default function Toolbar({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function updateFilter(
-    key: string,
-    value: string
-  ) {
-    const params = new URLSearchParams(
-      searchParams.toString()
-    );
+  const [showExportMenu, setShowExportMenu] =
+    useState(false);
 
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
+  const exportRef =
+    useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(
+      event: MouseEvent
+    ) {
+      if (
+        exportRef.current &&
+        !exportRef.current.contains(
+          event.target as Node
+        )
+      ) {
+        setShowExportMenu(false);
+      }
     }
 
-    // Tukar filter sentiasa kembali ke page pertama
-    params.delete("page");
-
-    router.push(
-      `/khazanah-politik?${params.toString()}`
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
     );
-  }
 
-  function resetFilters() {
-    router.push("/khazanah-politik");
-  }
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  const updateFilter = useCallback(
+    (
+      key: string,
+      value: string
+    ) => {
+      const params =
+        new URLSearchParams(
+          searchParams.toString()
+        );
+
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+
+      // Tukar filter sentiasa kembali ke halaman pertama
+      params.delete("page");
+
+      router.push(
+        `${BASE_ROUTE}?${params.toString()}`
+      );
+    },
+    [router, searchParams]
+  );
+
+  const resetFilters =
+    useCallback(() => {
+      router.push(BASE_ROUTE);
+    }, [router]);
 
   return (
     <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-4">
 
-      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
 
-        {/* Kategori */}
-        <select
-          value={searchParams.get("category") ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "category",
-              e.target.value
-            )
-          }
-          className="rounded-lg border px-4 py-2"
-        >
-          <option value="">
-            Semua Kategori
-          </option>
+          {/* Kategori */}
+          <Select
+            value={
+              searchParams.get("category") ??
+              ""
+            }
+            onChange={(e) =>
+              updateFilter(
+                "category",
+                e.target.value
+              )
+            }
+            placeholder="Semua Kategori"
+            options={categories.map(
+              (category) => ({
+                value: category,
+                label: category,
+              })
+            )}
+          />
 
-          {categories.map((category) => (
-            <option
-              key={category}
-              value={category}
+          {/* Status */}
+          <Select
+            value={
+              searchParams.get("status") ??
+              ""
+            }
+            onChange={(e) =>
+              updateFilter(
+                "status",
+                e.target.value
+              )
+            }
+            placeholder="Semua Status"
+            options={[
+              {
+                value: "PUBLISHED",
+                label: "Diterbitkan",
+              },
+              {
+                value: "DRAFT",
+                label: "Draf",
+              },
+              {
+                value: "ARCHIVED",
+                label: "Arkib",
+              },
+            ]}
+          />
+
+          {/* Negeri */}
+          <Select
+            value={
+              searchParams.get("state") ??
+              ""
+            }
+            onChange={(e) =>
+              updateFilter(
+                "state",
+                e.target.value
+              )
+            }
+            placeholder="Semua Negeri"
+            options={states.map(
+              (state) => ({
+                value: state,
+                label: state,
+              })
+            )}
+          />
+
+          {/* Tahun */}
+          <Select
+            value={
+              searchParams.get("year") ??
+              ""
+            }
+            onChange={(e) =>
+              updateFilter(
+                "year",
+                e.target.value
+              )
+            }
+            placeholder="Semua Tahun"
+            options={years.map(
+              (year) => ({
+                value: year.toString(),
+                label: year.toString(),
+              })
+            )}
+          />
+
+          {/* Susun */}
+          <Select
+            value={
+              searchParams.get("sort") ??
+              "latest"
+            }
+            onChange={(e) =>
+              updateFilter(
+                "sort",
+                e.target.value
+              )
+            }
+            options={[
+              {
+                value: "latest",
+                label: "Terbaharu",
+              },
+              {
+                value: "oldest",
+                label: "Terlama",
+              },
+              {
+                value: "title-asc",
+                label: "Tajuk A-Z",
+              },
+              {
+                value: "title-desc",
+                label: "Tajuk Z-A",
+              },
+              {
+                value: "year-desc",
+                label: "Tahun Terbaharu",
+              },
+              {
+                value: "year-asc",
+                label: "Tahun Terlama",
+              },
+            ]}
+          />
+
+          {/* Reset */}
+          <Button
+            variant="outline"
+            icon={RotateCcw}
+            onClick={resetFilters}
+          >
+            Tetapkan Semula
+          </Button>
+
+        </div>
+
+        <div className="flex items-center gap-3">
+
+          {/* Export */}
+          <div
+            className="relative"
+            ref={exportRef}
+          >
+            <Button
+              variant="secondary"
+              icon={Download}
+              onClick={() =>
+                setShowExportMenu(
+                  (prev) => !prev
+                )
+              }
             >
-              {category}
-            </option>
-          ))}
-        </select>
+              Eksport
+            </Button>
 
-        {/* Status */}
-        <select
-          value={searchParams.get("status") ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "status",
-              e.target.value
-            )
-          }
-          className="rounded-lg border px-4 py-2"
-        >
-          <option value="">
-            Semua Status
-          </option>
+            {showExportMenu && (
+              <div className="absolute right-0 z-20 mt-2 w-52 rounded-lg border bg-white shadow-lg">
+                {exportOptions.map(
+                  (option) => (
+                    <a
+                      key={option.format}
+                      href={`/api/khazanah/export/${option.format}?${searchParams.toString()}`}
+                      onClick={() =>
+                        setShowExportMenu(
+                          false
+                        )
+                      }
+                      className="block px-4 py-3 hover:bg-gray-100"
+                    >
+                      {option.label}
+                    </a>
+                  )
+                )}
+              </div>
+            )}
+          </div>
 
-          <option value="Aktif">
-            Aktif
-          </option>
+          {/* Tambah */}
+          <Link
+            href={`${BASE_ROUTE}/tambah`}
+          >
+            <Button icon={Plus}>
+              Tambah Aset
+            </Button>
+          </Link>
 
-          <option value="Draf">
-            Draf
-          </option>
-
-          <option value="Dalam Semakan">
-            Dalam Semakan
-          </option>
-
-          <option value="Arkib">
-            Arkib
-          </option>
-        </select>
-
-        {/* Negeri */}
-        <select
-          value={searchParams.get("state") ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "state",
-              e.target.value
-            )
-          }
-          className="rounded-lg border px-4 py-2"
-        >
-          <option value="">
-            Semua Negeri
-          </option>
-
-          {states.map((state) => (
-            <option
-              key={state}
-              value={state}
-            >
-              {state}
-            </option>
-          ))}
-        </select>
-
-        {/* Tahun */}
-        <select
-          value={searchParams.get("year") ?? ""}
-          onChange={(e) =>
-            updateFilter(
-              "year",
-              e.target.value
-            )
-          }
-          className="rounded-lg border px-4 py-2"
-        >
-          <option value="">
-            Semua Tahun
-          </option>
-
-          {years.map((year) => (
-            <option
-              key={year}
-              value={year.toString()}
-            >
-              {year}
-            </option>
-          ))}
-        </select>
-
-        {/* Susun */}
-        <select
-          value={searchParams.get("sort") ?? "latest"}
-          onChange={(e) =>
-            updateFilter(
-              "sort",
-              e.target.value
-            )
-          }
-          className="rounded-lg border px-4 py-2"
-        >
-          <option value="latest">
-            📅 Terbaru
-          </option>
-
-          <option value="oldest">
-            📅 Terlama
-          </option>
-
-          <option value="title-asc">
-            🔤 Tajuk A-Z
-          </option>
-
-          <option value="title-desc">
-            🔤 Tajuk Z-A
-          </option>
-
-          <option value="year-desc">
-            📆 Tahun Terbaru
-          </option>
-
-          <option value="year-asc">
-            📆 Tahun Terlama
-          </option>
-        </select>
-
-        {/* Reset */}
-        <button
-          onClick={resetFilters}
-          className="rounded-lg border border-red-300 px-5 py-2 text-red-600 hover:bg-red-50"
-        >
-          🧹 Reset Filter
-        </button>
-
-        {/* Tambah */}
-        <Link
-          href="/khazanah-politik/tambah"
-          className="ml-auto rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700"
-        >
-          + Tambah Aset
-        </Link>
-
+        </div>
       </div>
-
     </div>
   );
 }

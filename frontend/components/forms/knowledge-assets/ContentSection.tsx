@@ -2,6 +2,9 @@
 
 import { AssetFormData } from "./AssetForm";
 
+import SectionCard from "@/components/ui/SectionCard";
+import Textarea from "@/components/ui/Textarea";
+
 type Props = {
   data: AssetFormData;
   updateField: (
@@ -15,54 +18,37 @@ export default function ContentSection({
   updateField,
 }: Props) {
   return (
-    <div className="rounded-xl border bg-white p-8 shadow-sm">
-
-      <h2 className="mb-6 text-2xl font-semibold">
-        📝 Kandungan
-      </h2>
-
+    <SectionCard
+      title="Kandungan"
+      description="Masukkan ringkasan dan kandungan penuh aset pengetahuan."
+    >
       <div className="space-y-6">
+        <Textarea
+          label="Ringkasan"
+          rows={5}
+          placeholder="Masukkan ringkasan dokumen..."
+          value={data.summary}
+          onChange={(e) =>
+            updateField(
+              "summary",
+              e.target.value
+            )
+          }
+        />
 
-        <div>
-          <label className="mb-2 block font-medium">
-            Ringkasan
-          </label>
-
-          <textarea
-            rows={5}
-            value={data.summary}
-            onChange={(e) =>
-              updateField(
-                "summary",
-                e.target.value
-              )
-            }
-            placeholder="Masukkan ringkasan dokumen..."
-            className="w-full rounded-lg border px-4 py-3"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block font-medium">
-            Kandungan Penuh
-          </label>
-
-          <textarea
-            rows={15}
-            value={data.content}
-            onChange={(e) =>
-              updateField(
-                "content",
-                e.target.value
-              )
-            }
-            placeholder="Masukkan kandungan penuh dokumen..."
-            className="w-full rounded-lg border px-4 py-3"
-          />
-        </div>
-
+        <Textarea
+          label="Kandungan Penuh"
+          rows={15}
+          placeholder="Masukkan kandungan penuh dokumen..."
+          value={data.content}
+          onChange={(e) =>
+            updateField(
+              "content",
+              e.target.value
+            )
+          }
+        />
       </div>
-
-    </div>
+    </SectionCard>
   );
 }

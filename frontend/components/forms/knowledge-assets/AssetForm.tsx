@@ -4,9 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import BasicInformation from "./BasicInformation";
+import DocumentUploadSection from "./DocumentUploadSection";
 import ContentSection from "./ContentSection";
 import SourceSection from "./SourceSection";
 import MetadataSection from "./MetadataSection";
+import AuditSection from "./AuditSection";
+import AssetActions from "./AssetActions";
+
+import Alert from "@/components/ui/Alert";
 
 export type AssetFormData = {
   title: string;
@@ -27,7 +32,8 @@ export type AssetFormData = {
   content: string;
 
   source: string;
-  url: string;
+  sourceUrl: string;
+  sourceReference: string;
 
   tags: string;
 
@@ -38,9 +44,7 @@ export type AssetFormData = {
 
 type AssetFormProps = {
   mode: "create" | "edit";
-
   assetId?: number;
-
   initialData?: Partial<AssetFormData>;
 };
 
@@ -51,24 +55,34 @@ export default function AssetForm({
 }: AssetFormProps) {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
+
+      const [error, setError] =
+    useState("");
 
   const [formData, setFormData] =
     useState<AssetFormData>({
-      title: initialData?.title ?? "",
+      title:
+        initialData?.title ?? "",
 
-      category: initialData?.category ?? "",
+      category:
+        initialData?.category ?? "",
+
       subcategory:
         initialData?.subcategory ?? "",
 
       institution:
         initialData?.institution ?? "",
 
-      state: initialData?.state ?? "",
+      state:
+        initialData?.state ?? "",
 
-      year: initialData?.year ?? "",
+      year:
+        initialData?.year ?? "",
 
-      author: initialData?.author ?? "",
+      author:
+        initialData?.author ?? "",
 
       publishedAt:
         initialData?.publishedAt ?? "",
@@ -82,18 +96,22 @@ export default function AssetForm({
       source:
         initialData?.source ?? "",
 
-      url: initialData?.url ?? "",
+      sourceUrl:
+        initialData?.sourceUrl ?? "",
+
+      sourceReference:
+        initialData?.sourceReference ?? "",
 
       tags:
         initialData?.tags ?? "",
 
       status:
-        initialData?.status ?? "Aktif",
+        initialData?.status ?? "DRAFT",
 
       file: null,
     });
 
-  function updateField(
+      function updateField(
     field: keyof AssetFormData,
     value: any
   ) {
@@ -109,22 +127,54 @@ export default function AssetForm({
     e.preventDefault();
 
     if (!formData.title.trim()) {
-      alert("Sila masukkan tajuk.");
+      setError("Sila masukkan tajuk.");
       return;
     }
 
     if (!formData.category) {
-      alert("Sila pilih kategori.");
+      setError("Sila pilih kategori.");
       return;
     }
 
-    try {
+    setError("");
+
+        try {
       setLoading(true);
 
+      let uploadedFile = null;
+
+if (formData.file) {
+  const uploadForm = new FormData();
+
+  uploadForm.append(
+    "file",
+    formData.file
+  );
+
+  const uploadResponse = await fetch(
+    "/api/uploads",
+    {
+      method: "POST",
+      body: uploadForm,
+    }
+  );
+
+  if (!uploadResponse.ok) {
+    throw new Error(
+      "Gagal memuat naik dokumen."
+    );
+  }
+
+  const uploadResult =
+    await uploadResponse.json();
+
+  uploadedFile =
+    uploadResult.data;
+}
       const response = await fetch(
-  mode === "create"
-    ? "/api/assets"
-    : `/api/assets/${assetId}`,
+        mode === "create"
+          ? "/api/khazanah-politik"
+          : `/api/khazanah-politik/${assetId}`,
         {
           method:
             mode === "create"
@@ -139,8 +189,7 @@ export default function AssetForm({
           body: JSON.stringify({
             title: formData.title,
 
-            category:
-              formData.category,
+            category: formData.category,
 
             subcategory:
               formData.subcategory,
@@ -151,75 +200,96 @@ export default function AssetForm({
             state: formData.state,
 
             year:
-              formData.year === ""
-                ? null
-                : Number(formData.year),
+  formData.year === ""
+    ? undefined
+    : Number(formData.year),
 
-            author:
-              formData.author,
+            author: formData.author,
 
             publishedAt:
               formData.publishedAt || null,
 
-            summary:
-              formData.summary,
+            summary: formData.summary,
 
-            content:
-              formData.content,
+            content: formData.content,
 
-            source:
-              formData.source,
+            source: formData.source,
 
-            url: formData.url,
+            sourceUrl:
+              formData.sourceUrl,
+
+            sourceReference:
+              formData.sourceReference,
 
             tags: formData.tags,
 
-            status:
-              formData.status,
+            status: formData.status,
           }),
         }
       );
 
       if (!response.ok) {
-  console.log("Status:", response.status);
+        const message =
+          await response.text();
 
-  const error = await response.text();
-  console.log("Response:", error);
-
-  throw new Error(error);
-}
-
-      alert(
-        mode === "create"
-          ? "Aset berjaya disimpan."
-          : "Aset berjaya dikemaskini."
-      );
+        throw new Error(message);
+      }
 
       router.push(
         "/khazanah-politik?success=1"
       );
 
       router.refresh();
-    } catch {
-      alert(
-  mode === "create"
-    ? "Gagal menyimpan aset."
-    : "Gagal meminda aset."
-);
+
+    } catch (err) {
+      console.error(
+        "AssetForm Error:",
+        err
+      );
+
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError(
+          mode === "create"
+            ? "Gagal menyimpan aset."
+            : "Gagal mengemas kini aset."
+        );
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  return (
+  function handlePublish() {
+    setFormData((prev) => ({
+      ...prev,
+      status: "PUBLISHED",
+    }));
+  }
+
+    return (
     <form
       onSubmit={handleSubmit}
       className="space-y-8"
     >
+      {error && (
+        <Alert variant="error">
+          {error}
+        </Alert>
+      )}
+
       <BasicInformation
         data={formData}
         updateField={updateField}
       />
+
+      <DocumentUploadSection
+  file={formData.file}
+  onFileChange={(file) =>
+    updateField("file", file)
+  }
+/>
 
       <ContentSection
         data={formData}
@@ -236,31 +306,18 @@ export default function AssetForm({
         updateField={updateField}
       />
 
-      <div className="flex justify-end gap-3 border-t pt-6">
-        <button
-          type="button"
-          onClick={() =>
-            router.push(
-              "/khazanah-politik"
-            )
-          }
-          className="rounded-lg border px-6 py-3"
-        >
-          Batal
-        </button>
+      <AuditSection
+        status={formData.status}
+      />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-blue-600 px-6 py-3 text-white hover:bg-blue-700 disabled:bg-gray-400"
-        >
-          {loading
-            ? "Menyimpan..."
-            : mode === "create"
-            ? "Simpan Aset"
-            : "Kemaskini Aset"}
-        </button>
-      </div>
+      <AssetActions
+        mode={mode}
+        isSubmitting={loading}
+        onCancel={() =>
+          router.push("/khazanah-politik")
+        }
+        onPublish={handlePublish}
+      />
     </form>
   );
 }

@@ -8,34 +8,176 @@ datasource db {
 }
 
 model KnowledgeAsset {
-  id            Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-  title         String
+  // Basic Information
+  title String
+  slug  String @unique
 
-  category      String
-  subcategory   String?
+  category    String
+  subcategory String?
 
-  institution   String?
-  state         String?
+  institution String?
+  state       String?
+  year        Int?
 
-  year          Int?
+  author String?
 
-  author        String?
+  // Content
+  summary String?
+  content String?
 
-  summary       String?
-  content       String?
+  // Source
+  source          String?
+  sourceUrl       String?
+  sourceReference String?
 
-  tags          String?
+  // Metadata
+  tags String?
 
-  source        String?
-  url           String?
+  // Workflow
+  status  String @default("DRAFT")
+  version Int    @default(1)
 
-  filePath      String?
+  // Publishing
+  publishedAt DateTime?
+  publishedBy String?
 
-  status        String   @default("Aktif")
+  archivedAt DateTime?
+  archivedBy String?
 
-  publishedAt   DateTime?
+  // Temporary (akan dibuang apabila upload module siap)
+  filePath String?
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  // Audit
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  attachments     KnowledgeAttachment[]
+  versions        KnowledgeVersion[]
+  sourceRelations KnowledgeRelation[]   @relation("SourceRelation")
+  targetRelations KnowledgeRelation[]   @relation("TargetRelation")
+
+  @@index([category])
+  @@index([status])
+  @@index([updatedAt])
+}
+
+model KnowledgeAttachment {
+
+  id Int @id @default(autoincrement())
+
+  assetId Int
+
+  originalName String
+  storedName   String
+
+  filePath String
+
+  fileType String?
+  fileSize Int?
+
+  uploadedBy String?
+
+  createdAt DateTime @default(now())
+
+ asset KnowledgeAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  @@index([assetId])
+}
+
+model KnowledgeVersion {
+  id Int @id @default(autoincrement())
+
+  assetId Int
+
+  version Int
+
+  title String
+
+  summary String?
+  content String?
+
+  updatedBy String?
+
+  createdAt DateTime @default(now())
+
+  asset KnowledgeAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([assetId])
+}
+
+model KnowledgeRelation {
+  id Int @id @default(autoincrement())
+
+  sourceAssetId Int
+  targetAssetId Int
+
+  relationType String
+
+  createdAt DateTime @default(now())
+
+  sourceAsset KnowledgeAsset @relation("SourceRelation", fields: [sourceAssetId], references: [id], onDelete: Cascade)
+
+  targetAsset KnowledgeAsset @relation("TargetRelation", fields: [targetAssetId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceAssetId, targetAssetId, relationType])
+  @@index([sourceAssetId])
+  @@index([targetAssetId])
+}
+
+model KnowledgeImportLog {
+  id Int @id @default(autoincrement())
+
+  fileName String
+  fileType String
+
+  importedBy String?
+
+  totalRecords Int?
+  successCount Int?
+  failedCount  Int?
+
+  status String @default("SUCCESS")
+
+  remarks String?
+
+  createdAt DateTime @default(now())
+}
+
+model KnowledgeImportJob {
+  id Int @id @default(autoincrement())
+
+  fileName     String
+  originalName String
+  filePath     String
+
+  fileType String
+  mimeType String?
+
+  fileSize Int?
+
+  documentType String?
+
+  uploadedBy String?
+
+  status String @default("UPLOADED")
+
+  progress Int @default(0)
+
+  errorMessage String?
+
+  extractedText String?
+
+  aiSummary String?
+
+  aiMetadata String?
+
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
 }

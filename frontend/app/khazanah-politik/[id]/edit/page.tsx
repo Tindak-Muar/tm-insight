@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 import AssetForm from "@/components/forms/knowledge-assets/AssetForm";
+import { FilePenLine } from "lucide-react";
 
 type Props = {
   params: Promise<{
@@ -28,14 +29,15 @@ export default async function EditAssetPage({
     <div className="space-y-8">
 
       <div>
-        <h1 className="text-4xl font-bold">
-          ✏️ Kemaskini Aset Pengetahuan
-        </h1>
+  <h1 className="flex items-center gap-3 text-4xl font-bold">
+    <FilePenLine className="h-9 w-9 text-blue-600" />
+    Kemas Kini Aset Pengetahuan
+  </h1>
 
-        <p className="mt-2 text-gray-500">
-          Kemaskini maklumat aset di dalam Khazanah Politik.
-        </p>
-      </div>
+  <p className="mt-2 text-gray-500">
+    Kemas kini maklumat aset di dalam Khazanah Politik.
+  </p>
+</div>
 
       <AssetForm
         mode="edit"

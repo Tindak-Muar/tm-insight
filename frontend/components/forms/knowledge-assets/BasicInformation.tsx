@@ -2,6 +2,12 @@
 
 import { AssetFormData } from "./AssetForm";
 
+import SectionCard from "@/components/ui/SectionCard";
+import Input from "@/components/ui/Input";
+import Select, {
+  SelectOption,
+} from "@/components/ui/Select";
+
 import {
   CATEGORIES,
   CATEGORY_OPTIONS,
@@ -31,229 +37,154 @@ export default function BasicInformation({
         ]
       : [];
 
+  const categoryOptions: SelectOption[] =
+    CATEGORY_OPTIONS.map((item) => ({
+      value: item,
+      label: item,
+    }));
+
+  const subcategoryOptions: SelectOption[] =
+    subcategories.map((item) => ({
+      value: item,
+      label: item,
+    }));
+
+  const institutionOptions: SelectOption[] =
+    INSTITUTIONS.map((item) => ({
+      value: item,
+      label: item,
+    }));
+
+  const stateOptions: SelectOption[] =
+    STATES.map((item) => ({
+      value: item,
+      label: item,
+    }));
+
+  const yearOptions: SelectOption[] =
+    YEARS.map((item) => ({
+      value: String(item),
+      label: String(item),
+    }));
+
   return (
-    <div className="rounded-xl border bg-white p-8 shadow-sm">
-
-      <h2 className="mb-6 text-2xl font-semibold">
-        📚 Maklumat Utama
-      </h2>
-
+    <SectionCard
+      title="Maklumat Utama"
+      description="Lengkapkan maklumat asas aset pengetahuan."
+    >
       <div className="grid grid-cols-2 gap-6">
 
         <div className="col-span-2">
-          <label className="mb-2 block font-medium">
-            Tajuk *
-          </label>
-
-          <input
-            type="text"
+          <Input
+            label="Tajuk *"
+            placeholder="Masukkan tajuk dokumen..."
             value={data.title}
             onChange={(e) =>
-              updateField("title", e.target.value)
+              updateField(
+                "title",
+                e.target.value
+              )
             }
-            className="w-full rounded-lg border px-4 py-3"
-            placeholder="Masukkan tajuk dokumen..."
           />
         </div>
 
-        <div>
-          <label className="mb-2 block font-medium">
-            Kategori *
-          </label>
+        <Select
+          label="Kategori *"
+          value={data.category}
+          options={categoryOptions}
+          placeholder="Pilih Kategori"
+          onChange={(e) => {
+            updateField(
+              "category",
+              e.target.value
+            );
 
-          <select
-            value={data.category}
-            onChange={(e) => {
-              updateField(
-                "category",
-                e.target.value
-              );
+            updateField(
+              "subcategory",
+              ""
+            );
+          }}
+        />
+                <Select
+          label="Subkategori"
+          value={data.subcategory}
+          options={subcategoryOptions}
+          placeholder="Pilih Subkategori"
+          onChange={(e) =>
+            updateField(
+              "subcategory",
+              e.target.value
+            )
+          }
+        />
 
-              updateField(
-                "subcategory",
-                ""
-              );
-            }}
-            className="w-full rounded-lg border px-4 py-3"
-          >
-            <option value="">
-              Pilih Kategori
-            </option>
+        <Select
+          label="Institusi"
+          value={data.institution}
+          options={institutionOptions}
+          placeholder="Pilih Institusi"
+          onChange={(e) =>
+            updateField(
+              "institution",
+              e.target.value
+            )
+          }
+        />
 
-            {CATEGORY_OPTIONS.map(
-              (category) => (
-                <option
-                  key={category}
-                  value={category}
-                >
-                  {category}
-                </option>
-              )
-            )}
-          </select>
-        </div>
+        <Select
+          label="Negeri"
+          value={data.state}
+          options={stateOptions}
+          placeholder="Pilih Negeri"
+          onChange={(e) =>
+            updateField(
+              "state",
+              e.target.value
+            )
+          }
+        />
 
-        <div>
-          <label className="mb-2 block font-medium">
-            Subkategori
-          </label>
+        <Select
+          label="Tahun"
+          value={
+            data.year
+              ? String(data.year)
+              : ""
+          }
+          options={yearOptions}
+          placeholder="Pilih Tahun"
+          onChange={(e) =>
+            updateField(
+              "year",
+              e.target.value
+            )
+          }
+        />
 
-          <select
-            value={data.subcategory}
-            onChange={(e) =>
-              updateField(
-                "subcategory",
-                e.target.value
-              )
-            }
-            className="w-full rounded-lg border px-4 py-3"
-          >
-            <option value="">
-              Pilih Subkategori
-            </option>
+        <Input
+          label="Penulis"
+          placeholder="Nama penulis..."
+          value={data.author}
+          onChange={(e) =>
+            updateField(
+              "author",
+              e.target.value
+            )
+          }
+        />
 
-            {subcategories.map((item) => (
-              <option
-                key={item}
-                value={item}
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block font-medium">
-            Institusi
-          </label>
-
-          <select
-            value={data.institution}
-            onChange={(e) =>
-              updateField(
-                "institution",
-                e.target.value
-              )
-            }
-            className="w-full rounded-lg border px-4 py-3"
-          >
-            <option value="">
-              Pilih Institusi
-            </option>
-
-            {INSTITUTIONS.map(
-              (institution) => (
-                <option
-                  key={institution}
-                  value={institution}
-                >
-                  {institution}
-                </option>
-              )
-            )}
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block font-medium">
-            Negeri
-          </label>
-
-          <select
-            value={data.state}
-            onChange={(e) =>
-              updateField(
-                "state",
-                e.target.value
-              )
-            }
-            className="w-full rounded-lg border px-4 py-3"
-          >
-            <option value="">
-              Pilih Negeri
-            </option>
-
-            {STATES.map((state) => (
-              <option
-                key={state}
-                value={state}
-              >
-                {state}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block font-medium">
-            Tahun
-          </label>
-
-          <select
-            value={data.year}
-            onChange={(e) =>
-              updateField(
-                "year",
-                e.target.value
-              )
-            }
-            className="w-full rounded-lg border px-4 py-3"
-          >
-            <option value="">
-              Pilih Tahun
-            </option>
-
-            {YEARS.map((year) => (
-              <option
-                key={year}
-                value={year}
-              >
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="mb-2 block font-medium">
-            Penulis
-          </label>
-
-          <input
-            type="text"
-            value={data.author}
-            onChange={(e) =>
-              updateField(
-                "author",
-                e.target.value
-              )
-            }
-            className="w-full rounded-lg border px-4 py-3"
-            placeholder="Nama penulis..."
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block font-medium">
-            Tarikh Terbit
-          </label>
-
-          <input
-            type="date"
-            value={data.publishedAt}
-            onChange={(e) =>
-              updateField(
-                "publishedAt",
-                e.target.value
-              )
-            }
-            className="w-full rounded-lg border px-4 py-3"
-          />
-        </div>
-
+        <Input
+          label="Tarikh Terbit"
+          type="date"
+          value={data.publishedAt}
+          onChange={(e) =>
+            updateField(
+              "publishedAt",
+              e.target.value
+            )
+          }
+        />
       </div>
-
-    </div>
+    </SectionCard>
   );
 }

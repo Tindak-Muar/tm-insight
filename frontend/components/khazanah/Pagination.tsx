@@ -1,5 +1,7 @@
 "use client";
 
+import { useCallback, useMemo } from "react";
+
 import {
   useRouter,
   useSearchParams,
@@ -10,6 +12,11 @@ type PaginationProps = {
   totalPages: number;
 };
 
+const BASE_ROUTE = "/khazanah-politik";
+
+const BUTTON_CLASS =
+  "rounded-lg border px-4 py-2 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50";
+
 export default function Pagination({
   currentPage,
   totalPages,
@@ -17,80 +24,102 @@ export default function Pagination({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function goToPage(page: number) {
-    if (
-      page < 1 ||
-      page > totalPages ||
-      page === currentPage
-    ) {
-      return;
-    }
+  const goToPage = useCallback(
+    (page: number) => {
+      if (
+        page < 1 ||
+        page > totalPages ||
+        page === currentPage
+      ) {
+        return;
+      }
 
-    const params = new URLSearchParams(
-      searchParams.toString()
+      const params =
+        new URLSearchParams(
+          searchParams.toString()
+        );
+
+      params.set("page", page.toString());
+
+      const url =
+        params.toString().length > 0
+          ? `${BASE_ROUTE}?${params.toString()}`
+          : BASE_ROUTE;
+
+      router.push(url);
+    },
+    [
+      currentPage,
+      totalPages,
+      router,
+      searchParams,
+    ]
+  );
+
+  const pages = useMemo(() => {
+    const startPage = Math.max(
+      1,
+      currentPage - 2
     );
 
-    params.set("page", page.toString());
-
-    router.push(
-      `/khazanah-politik?${params.toString()}`
+    const endPage = Math.min(
+      totalPages,
+      currentPage + 2
     );
-  }
+
+    return Array.from(
+      {
+        length:
+          endPage -
+          startPage +
+          1,
+      },
+      (_, index) =>
+        startPage + index
+    );
+  }, [currentPage, totalPages]);
 
   if (totalPages <= 1) {
     return null;
   }
 
-  const startPage = Math.max(
-    1,
-    currentPage - 2
-  );
-
-  const endPage = Math.min(
-    totalPages,
-    currentPage + 2
-  );
-
-  const pages = [];
-
-  for (
-    let page = startPage;
-    page <= endPage;
-    page++
-  ) {
-    pages.push(page);
-  }
-
-  const buttonClass =
-    "rounded-lg border px-4 py-2 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50";
+  const startPage = pages[0];
+  const endPage =
+    pages[pages.length - 1];
 
   return (
     <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-
       <p className="text-sm text-gray-500">
         Halaman{" "}
-        <strong>{currentPage}</strong> daripada{" "}
+        <strong>{currentPage}</strong>{" "}
+        daripada{" "}
         <strong>{totalPages}</strong>
       </p>
 
       <div className="flex flex-wrap items-center gap-2">
 
-        {/* Mula */}
         <button
-          onClick={() => goToPage(1)}
-          disabled={currentPage === 1}
-          className={buttonClass}
+          onClick={() =>
+            goToPage(1)
+          }
+          disabled={
+            currentPage === 1
+          }
+          className={BUTTON_CLASS}
         >
           « Mula
         </button>
 
-        {/* Sebelum */}
         <button
           onClick={() =>
-            goToPage(currentPage - 1)
+            goToPage(
+              currentPage - 1
+            )
           }
-          disabled={currentPage === 1}
-          className={buttonClass}
+          disabled={
+            currentPage === 1
+          }
+          className={BUTTON_CLASS}
         >
           ← Sebelum
         </button>
@@ -98,8 +127,12 @@ export default function Pagination({
         {startPage > 1 && (
           <>
             <button
-              onClick={() => goToPage(1)}
-              className={buttonClass}
+              onClick={() =>
+                goToPage(1)
+              }
+              className={
+                BUTTON_CLASS
+              }
             >
               1
             </button>
@@ -128,9 +161,12 @@ export default function Pagination({
           </button>
         ))}
 
-        {endPage < totalPages && (
+        {endPage <
+          totalPages && (
           <>
-            {endPage < totalPages - 1 && (
+            {endPage <
+              totalPages -
+                1 && (
               <span className="px-2 text-gray-400">
                 ...
               </span>
@@ -138,43 +174,50 @@ export default function Pagination({
 
             <button
               onClick={() =>
-                goToPage(totalPages)
+                goToPage(
+                  totalPages
+                )
               }
-              className={buttonClass}
+              className={
+                BUTTON_CLASS
+              }
             >
               {totalPages}
             </button>
           </>
         )}
 
-        {/* Seterusnya */}
         <button
           onClick={() =>
-            goToPage(currentPage + 1)
+            goToPage(
+              currentPage + 1
+            )
           }
           disabled={
-            currentPage === totalPages
+            currentPage ===
+            totalPages
           }
-          className={buttonClass}
+          className={BUTTON_CLASS}
         >
           Seterusnya →
         </button>
 
-        {/* Akhir */}
         <button
           onClick={() =>
-            goToPage(totalPages)
+            goToPage(
+              totalPages
+            )
           }
           disabled={
-            currentPage === totalPages
+            currentPage ===
+            totalPages
           }
-          className={buttonClass}
+          className={BUTTON_CLASS}
         >
           Akhir »
         </button>
 
       </div>
-
     </div>
   );
 }

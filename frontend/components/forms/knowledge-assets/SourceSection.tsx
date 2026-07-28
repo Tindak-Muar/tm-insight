@@ -2,6 +2,10 @@
 
 import { AssetFormData } from "./AssetForm";
 
+import SectionCard from "@/components/ui/SectionCard";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
+
 type Props = {
   data: AssetFormData;
   updateField: (
@@ -10,59 +14,54 @@ type Props = {
   ) => void;
 };
 
-export default function ContentSection({
+export default function SourceSection({
   data,
   updateField,
 }: Props) {
   return (
-    <div className="rounded-xl border bg-white p-8 shadow-sm">
-
-      <h2 className="mb-6 text-2xl font-semibold">
-        📝 Kandungan
-      </h2>
-
+    <SectionCard
+      title="Maklumat Sumber"
+      description="Nyatakan sumber asal dokumen dan pautan rujukan jika ada."
+    >
       <div className="space-y-6">
+        <Input
+          label="Sumber"
+          placeholder="Contoh: Jabatan Perangkaan Malaysia (DOSM)"
+          value={data.source}
+          onChange={(e) =>
+            updateField(
+              "source",
+              e.target.value
+            )
+          }
+        />
 
-        <div>
-          <label className="mb-2 block font-medium">
-            Ringkasan
-          </label>
+        <Input
+          label="Pautan Rujukan"
+          type="url"
+          placeholder="https://..."
+          value={data.sourceUrl}
+          onChange={(e) =>
+            updateField(
+              "sourceUrl",
+              e.target.value
+            )
+          }
+        />
 
-          <textarea
-            rows={5}
-            value={data.summary}
-            onChange={(e) =>
-              updateField(
-                "summary",
-                e.target.value
-              )
-            }
-            placeholder="Masukkan ringkasan dokumen..."
-            className="w-full rounded-lg border px-4 py-3"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block font-medium">
-            Kandungan Penuh
-          </label>
-
-          <textarea
-            rows={15}
-            value={data.content}
-            onChange={(e) =>
-              updateField(
-                "content",
-                e.target.value
-              )
-            }
-            placeholder="Masukkan kandungan penuh dokumen..."
-            className="w-full rounded-lg border px-4 py-3"
-          />
-        </div>
-
+        <Textarea
+          label="Catatan"
+          rows={4}
+          placeholder="Maklumat tambahan berkaitan sumber dokumen..."
+          value={data.sourceReference}
+          onChange={(e) =>
+            updateField(
+              "sourceReference",
+              e.target.value
+            )
+          }
+        />
       </div>
-
-    </div>
+    </SectionCard>
   );
 }

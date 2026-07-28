@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-import { prisma } from "@/lib/prisma";
+import { getKnowledgeAsset } from "@/lib/khazanah/service";
 import DeleteButton from "@/components/khazanah/DeleteButton";
 
 type Props = {
@@ -15,11 +15,9 @@ export default async function AssetDetailPage({
 }: Props) {
   const { id } = await params;
 
-  const asset = await prisma.knowledgeAsset.findUnique({
-    where: {
-      id: Number(id),
-    },
-  });
+  const asset = await getKnowledgeAsset(
+    Number(id)
+  );
 
   if (!asset) {
     notFound();
@@ -45,73 +43,128 @@ export default async function AssetDetailPage({
         </div>
 
         <span
-  className={`rounded-full px-4 py-2 text-sm font-medium ${
-    asset.status === "Aktif"
-      ? "bg-green-100 text-green-700"
-      : asset.status === "Draf"
-      ? "bg-yellow-100 text-yellow-700"
-      : asset.status === "Dalam Semakan"
-      ? "bg-sky-100 text-sky-700"
-      : "bg-gray-200 text-gray-700"
-  }`}
->
-              {asset.status}
+          className={`rounded-full px-4 py-2 text-sm font-medium ${
+            asset.status === "Aktif"
+              ? "bg-green-100 text-green-700"
+              : asset.status === "Draf"
+              ? "bg-yellow-100 text-yellow-700"
+              : asset.status === "Dalam Semakan"
+              ? "bg-sky-100 text-sky-700"
+              : "bg-gray-200 text-gray-700"
+          }`}
+        >
+          {asset.status}
         </span>
+
+      </div>
+
+      {/* Action Bar */}
+
+      <div className="flex flex-wrap gap-3 rounded-xl border bg-white p-4 shadow-sm">
+
+        <Link
+          href="/khazanah-politik"
+          className="rounded-lg border px-5 py-2 hover:bg-gray-50"
+        >
+          ← Kembali
+        </Link>
+
+        <Link
+          href={`/khazanah-politik/${asset.id}/edit`}
+          className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700"
+        >
+          ✏️ Pinda
+        </Link>
+
+        <button
+          disabled
+          className="rounded-lg border px-5 py-2 text-gray-400"
+        >
+          📤 Export
+        </button>
+
+        <button
+          disabled
+          className="rounded-lg border px-5 py-2 text-gray-400"
+        >
+          📎 Lampiran
+        </button>
+
+        <button
+          disabled
+          className="rounded-lg border px-5 py-2 text-gray-400"
+        >
+          🕒 Versi
+        </button>
+
+        <button
+          disabled
+          className="rounded-lg border px-5 py-2 text-gray-400"
+        >
+          🤖 AI
+        </button>
+
+        <div className="ml-auto">
+          <DeleteButton
+            id={asset.id}
+            redirect
+          />
+        </div>
 
       </div>
 
       {/* Maklumat */}
 
-<div className="rounded-xl border bg-white p-8 shadow-sm">
+      <div className="rounded-xl border bg-white p-8 shadow-sm">
 
-  <h2 className="mb-6 text-2xl font-semibold">
-    ℹ️ Maklumat Aset
-  </h2>
+        <h2 className="mb-6 text-2xl font-semibold">
+          ℹ️ Maklumat Aset
+        </h2>
 
-  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-    <Info
-      label="Kategori"
-      value={asset.category}
-    />
+          <Info
+            label="Kategori"
+            value={asset.category}
+          />
 
-    <Info
-      label="Subkategori"
-      value={asset.subcategory}
-    />
+          <Info
+            label="Subkategori"
+            value={asset.subcategory}
+          />
 
-    <Info
-      label="Institusi"
-      value={asset.institution}
-    />
+          <Info
+            label="Institusi"
+            value={asset.institution}
+          />
 
-    <Info
-      label="Negeri"
-      value={asset.state}
-    />
+          <Info
+            label="Negeri"
+            value={asset.state}
+          />
 
-    <Info
-      label="Tahun"
-      value={asset.year?.toString()}
-    />
+          <Info
+            label="Tahun"
+            value={asset.year?.toString()}
+          />
 
-    <Info
-      label="Penulis"
-      value={asset.author}
-    />
+          <Info
+            label="Penulis"
+            value={asset.author}
+          />
 
-    <Info
-      label="Tarikh Terbit"
-      value={
-        asset.publishedAt
-          ? asset.publishedAt.toLocaleDateString("ms-MY")
-          : "-"
-      }
-    />
+          <Info
+            label="Tarikh Terbit"
+            value={
+              asset.publishedAt
+                ? asset.publishedAt.toLocaleDateString("ms-MY")
+                : "-"
+            }
+          />
 
-  </div>
+        </div>
 
-</div>
+      </div>
 
       {/* Ringkasan */}
 
@@ -156,10 +209,10 @@ export default async function AssetDetailPage({
             value={asset.tags}
           />
 
-<Info
-  label="Sumber"
-  value={asset.source}
-/>
+          <Info
+            label="Sumber"
+            value={asset.source}
+          />
 
           <Info
             label="URL"
@@ -167,55 +220,32 @@ export default async function AssetDetailPage({
           />
 
           <Info
-  label="Fail"
-  value={asset.filePath}
-/>
+            label="Fail"
+            value={asset.filePath}
+          />
 
           <Info
-  label="Tarikh Daftar"
-  value={asset.createdAt.toLocaleString("ms-MY")}
-/>
+            label="Tarikh Daftar"
+            value={asset.createdAt.toLocaleString("ms-MY")}
+          />
 
-<Info
-  label="Tarikh Dikemas Kini"
-  value={asset.updatedAt.toLocaleString("ms-MY")}
-/>
+          <Info
+            label="Tarikh Dikemas Kini"
+            value={asset.updatedAt.toLocaleString("ms-MY")}
+          />
 
-<div className="md:col-span-2">
-  <Info
-    label="ID Aset"
-    value={asset.id.toString()}
-  />
-</div>
-      
-    </div>
+          <div className="md:col-span-2">
 
-    </div>
+            <Info
+              label="ID Aset"
+              value={asset.id.toString()}
+            />
 
-      {/* Button */}
+          </div>
 
-      <div className="flex flex-col gap-3 md:flex-row">
+        </div>
 
-  <Link
-    href="/khazanah-politik"
-    className="rounded-lg border px-6 py-3"
-  >
-    ← Kembali
-  </Link>
-
-  <Link
-    href={`/khazanah-politik/${asset.id}/edit`}
-    className="rounded-lg bg-blue-600 px-6 py-3 text-white"
-  >
-    ✏️ Pinda
-  </Link>
-
-  <DeleteButton
-  id={asset.id}
-  redirect
-/>
-
-</div>
+      </div>
 
     </div>
   );

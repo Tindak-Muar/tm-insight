@@ -1,15 +1,24 @@
+import Alert from "@/components/ui/Alert";
+
 type SuccessAlertProps = {
   show: boolean;
+  message?: string;
 };
+
+const DEFAULT_MESSAGE =
+  "Aset pengetahuan berjaya disimpan.";
 
 export default function SuccessAlert({
   show,
+  message = DEFAULT_MESSAGE,
 }: SuccessAlertProps) {
-  if (!show) return null;
+  if (!show) {
+    return null;
+  }
 
   return (
-    <div className="rounded-xl border border-green-300 bg-green-50 p-4 text-green-700">
-      ✅ Aset pengetahuan berjaya disimpan.
-    </div>
+    <Alert variant="success">
+      {message}
+    </Alert>
   );
 }
