@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
         author: asset.author ?? "",
         status: asset.status,
         source: asset.source ?? "",
-        url: asset.url ?? "",
+        url: asset.sourceUrl ?? "",
         createdAt: asset.createdAt.toLocaleString("ms-MY"),
       });
     });

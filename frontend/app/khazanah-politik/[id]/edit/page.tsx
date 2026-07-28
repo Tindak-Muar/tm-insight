@@ -65,7 +65,8 @@ export default async function EditAssetPage({
           content: asset.content ?? "",
 
           source: asset.source ?? "",
-          url: asset.url ?? "",
+          sourceUrl: asset.sourceUrl ?? "",
+          sourceReference: asset.sourceReference ?? "",
 
           tags: asset.tags ?? "",
 

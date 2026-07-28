@@ -16,6 +16,9 @@ export interface ExportAsset {
   summary?: string | null;
   status: string;
   source?: string | null;
-  url?: string | null;
-  createdAt: Date;
+
+  // Selaraskan dengan DTO
+  sourceUrl?: string | null;
+
+  createdAt: string;
 }

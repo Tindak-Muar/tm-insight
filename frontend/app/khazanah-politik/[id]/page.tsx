@@ -44,11 +44,11 @@ export default async function AssetDetailPage({
 
         <span
           className={`rounded-full px-4 py-2 text-sm font-medium ${
-            asset.status === "Aktif"
+            asset.status === "PUBLISHED"
               ? "bg-green-100 text-green-700"
-              : asset.status === "Draf"
+              : asset.status === "DRAFT"
               ? "bg-yellow-100 text-yellow-700"
-              : asset.status === "Dalam Semakan"
+              : asset.status === "ARCHIVED"
               ? "bg-sky-100 text-sky-700"
               : "bg-gray-200 text-gray-700"
           }`}
@@ -157,7 +157,7 @@ export default async function AssetDetailPage({
             label="Tarikh Terbit"
             value={
               asset.publishedAt
-                ? asset.publishedAt.toLocaleDateString("ms-MY")
+                ? new Date(asset.createdAt).toLocaleDateString("ms-MY")
                 : "-"
             }
           />
@@ -216,7 +216,7 @@ export default async function AssetDetailPage({
 
           <Info
             label="URL"
-            value={asset.url}
+            value={asset.sourceUrl}
           />
 
           <Info
@@ -226,12 +226,12 @@ export default async function AssetDetailPage({
 
           <Info
             label="Tarikh Daftar"
-            value={asset.createdAt.toLocaleString("ms-MY")}
+            value={new Date(asset.createdAt).toLocaleDateString("ms-MY")}
           />
 
           <Info
             label="Tarikh Dikemas Kini"
-            value={asset.updatedAt.toLocaleString("ms-MY")}
+            value={new Date(asset.createdAt).toLocaleDateString("ms-MY")}
           />
 
           <div className="md:col-span-2">

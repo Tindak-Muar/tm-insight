@@ -49,8 +49,8 @@ export async function generateExcel(
       author: item.author ?? "",
       status: item.status,
       source: item.source ?? "",
-      url: item.url ?? "",
-      createdAt: item.createdAt.toLocaleString("ms-MY"),
+      url: item.sourceUrl ?? "",
+      createdAt: new Date(item.createdAt).toLocaleString("ms-MY"),
     });
   });
 

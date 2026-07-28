@@ -3,15 +3,6 @@ import { generateSlug } from "@/lib/slug";
 import { buildKhazanahQuery } from "./query";
 
 import {
-  findKnowledgeAssets,
-  countKnowledgeAssets,
-  getKnowledgeAssetById,
-  createKnowledgeAsset,
-  updateKnowledgeAsset,
-  deleteKnowledgeAsset,
-} from "./repository";
-
-import {
   knowledgeSchema,
   type KnowledgeInput,
 } from "./schema";
@@ -19,6 +10,16 @@ import {
 import type { Prisma } from "@prisma/client";
 
 import { toDTO } from "./mapper";
+
+import {
+  findKnowledgeAssets,
+  countKnowledgeAssets,
+  getKnowledgeAssetById,
+  createKnowledgeAsset,
+  createKnowledgeAttachment,
+  updateKnowledgeAsset,
+  deleteKnowledgeAsset,
+} from "./repository";
 
 export interface KhazanahFilters {
   keyword?: string;
@@ -33,6 +34,42 @@ export interface KhazanahPagination
   extends KhazanahFilters {
   page?: number;
   pageSize?: number;
+}
+
+export interface AttachmentInput {
+  assetId: number;
+
+  originalName: string;
+  storedName: string;
+
+  filePath: string;
+
+  fileType?: string;
+  fileSize?: number;
+
+  uploadedBy?: string;
+}
+
+export async function createAttachment(
+  input: AttachmentInput
+) {
+  return createKnowledgeAttachment({
+    originalName: input.originalName,
+    storedName: input.storedName,
+
+    filePath: input.filePath,
+
+    fileType: input.fileType ?? null,
+    fileSize: input.fileSize ?? null,
+
+    uploadedBy: input.uploadedBy ?? null,
+
+    asset: {
+      connect: {
+        id: input.assetId,
+      },
+    },
+  });
 }
 
 export async function getKnowledgeAssets(
@@ -123,7 +160,7 @@ export async function createAsset(
     status: data.status,
   };
 
-  const asset =
+    const asset =
   await createKnowledgeAsset(payload);
 
 return toDTO(asset);

@@ -37,8 +37,8 @@ export function generateCSV(data: ExportAsset[]): string {
     item.author ?? "",
     item.status,
     item.source ?? "",
-    item.url ?? "",
-    item.createdAt.toLocaleString("ms-MY"),
+    item.sourceUrl ?? "",
+    new Date(item.createdAt).toLocaleString("ms-MY"),
   ]);
 
   const csv = [
