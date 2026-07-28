@@ -117,6 +117,8 @@ export default function Toolbar({
     }, [router]);
 
   return (
+  <div className="space-y-4">
+
     <div className="rounded-xl border bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-4">
 
@@ -264,8 +266,12 @@ export default function Toolbar({
           </Button>
 
         </div>
-
-        <div className="flex items-center gap-3">
+      </div>
+ </div>
+ 
+      {/* Actions */}
+      <div className="rounded-xl border bg-white p-4 shadow-sm">
+        <div className="flex justify-end items-center gap-3">
 
           {/* Export */}
           <div
@@ -317,6 +323,7 @@ export default function Toolbar({
 
         </div>
       </div>
-    </div>
-  );
+ </div>
+      
+      );
 }

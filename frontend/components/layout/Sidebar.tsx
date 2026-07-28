@@ -28,11 +28,6 @@ export default function Sidebar() {
       icon: BookOpen,
     },
     {
-      name: "Pusat Dokumentasi",
-      href: "/pusat-dokumentasi",
-      icon: Files,
-    },
-    {
       name: "Radar",
       href: "/radar",
       icon: Radar,
