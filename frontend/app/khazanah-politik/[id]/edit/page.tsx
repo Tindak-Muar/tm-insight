@@ -16,11 +16,13 @@ export default async function EditAssetPage({
   const { id } = await params;
 
   const asset = await prisma.knowledgeAsset.findUnique({
-    where: {
-      id: Number(id),
-    },
-  });
-
+  where: {
+    id: Number(id),
+  },
+  include: {
+    attachments: true,
+  },
+});
   if (!asset) {
     notFound();
   }

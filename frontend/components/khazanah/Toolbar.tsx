@@ -268,7 +268,7 @@ export default function Toolbar({
         </div>
       </div>
  </div>
- 
+
       {/* Actions */}
       <div className="rounded-xl border bg-white p-4 shadow-sm">
         <div className="flex justify-end items-center gap-3">
@@ -296,7 +296,7 @@ export default function Toolbar({
                   (option) => (
                     <a
                       key={option.format}
-                      href={`/api/khazanah/export/${option.format}?${searchParams.toString()}`}
+                      href={`/api/export/khazanah-politik/${option.format}?${searchParams.toString()}`}
                       onClick={() =>
                         setShowExportMenu(
                           false

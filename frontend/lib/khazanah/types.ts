@@ -8,6 +8,20 @@ export type KnowledgeStatus =
   | "PUBLISHED"
   | "ARCHIVED";
 
+ export interface KnowledgeAttachmentDTO {
+  id: number;
+
+  originalName: string;
+  storedName: string;
+
+  filePath: string;
+
+  fileType: string | null;
+  fileSize: number | null;
+
+  createdAt: string;
+} 
+
 /**
  * Knowledge Asset DTO
  * Semua DateTime daripada Prisma dihantar sebagai ISO 8601 string.
@@ -70,10 +84,16 @@ export interface KnowledgeAssetDTO {
   archivedBy: string | null;
 
   // --------------------------------------------------------------------------
-  // Temporary
-  // --------------------------------------------------------------------------
+// Attachments
+// --------------------------------------------------------------------------
 
-  filePath: string | null;
+attachments: KnowledgeAttachmentDTO[];
+
+// --------------------------------------------------------------------------
+// Temporary (akan dibuang selepas migrasi selesai)
+// --------------------------------------------------------------------------
+
+filePath: string | null;
 
   // --------------------------------------------------------------------------
   // Audit

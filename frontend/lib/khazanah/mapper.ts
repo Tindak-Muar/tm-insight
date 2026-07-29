@@ -1,13 +1,27 @@
-import { KnowledgeAsset } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 import {
   KnowledgeAssetDTO,
   KnowledgeStatus,
 } from "./types";
 
+type KnowledgeAssetWithRelations =
+  Prisma.KnowledgeAssetGetPayload<{
+    include: {
+      attachments: true;
+      versions: true;
+      sourceRelations: true;
+      targetRelations: true;
+    };
+  }>;
+
 export function toDTO(
-  asset: KnowledgeAsset
+  asset: KnowledgeAssetWithRelations
 ): KnowledgeAssetDTO {
+
+  console.log("=== MAPPER ATTACHMENTS ===");
+console.log(asset.attachments);
+
   return {
     id: asset.id,
 
@@ -74,6 +88,16 @@ export function toDTO(
     // --------------------------------------------------------------------------
 
     filePath: asset.filePath,
+
+    attachments: asset.attachments.map((attachment) => ({
+  id: attachment.id,
+  originalName: attachment.originalName,
+  storedName: attachment.storedName,
+  filePath: attachment.filePath,
+  fileType: attachment.fileType,
+  fileSize: attachment.fileSize,
+  createdAt: attachment.createdAt.toISOString(),
+})),
 
     // --------------------------------------------------------------------------
     // Audit

@@ -69,7 +69,19 @@ export const knowledgeSchema = z.object({
     "ARCHIVED",
   ])
   .default("DRAFT"),
+
+  attachment: z
+  .object({
+    originalName: z.string(),
+    storedName: z.string(),
+    filePath: z.string(),
+    fileType: z.string().optional(),
+    fileSize: z.number().optional(),
+  })
+  .optional(),
 });
 
 export type KnowledgeInput =
     z.infer<typeof knowledgeSchema>;
+
+    

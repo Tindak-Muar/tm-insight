@@ -110,7 +110,7 @@ export async function getKnowledgeAssetsPaginated(
       take: pageSize,
     });
 
-  return {
+      return {
   assets: assets.map(toDTO),
   total,
   page,
@@ -124,17 +124,30 @@ export async function getKnowledgeAsset(
   id: number
 ) {
   const asset =
-  await getKnowledgeAssetById(id);
+    await getKnowledgeAssetById(id);
 
-return asset
-  ? toDTO(asset)
-  : null;
+  console.log("=== RAW ASSET ===");
+  console.dir(asset, { depth: null });
+
+  if (!asset) {
+    return null;
+  }
+
+  const dto = toDTO(asset);
+
+  console.log("=== DTO ===");
+  console.dir(dto, { depth: null });
+
+  return dto;
 }
 
 export async function createAsset(
   input: KnowledgeInput
 ) {
   const data = knowledgeSchema.parse(input);
+
+  console.log("=== Parsed Data ===");
+  console.log(data);
 
   const payload: Prisma.KnowledgeAssetCreateInput = {
     title: data.title,
@@ -160,10 +173,31 @@ export async function createAsset(
     status: data.status,
   };
 
-    const asset =
-  await createKnowledgeAsset(payload);
+  const asset = await createKnowledgeAsset(payload);
 
-return toDTO(asset);
+  console.log("=== Asset Created ===");
+  console.log(asset);
+
+  if (data.attachment) {
+    console.log("=== Creating Attachment ===");
+    console.log(data.attachment);
+
+    await createAttachment({
+      assetId: asset.id,
+
+      originalName: data.attachment.originalName,
+      storedName: data.attachment.storedName,
+
+      filePath: data.attachment.filePath,
+
+      fileType: data.attachment.fileType,
+      fileSize: data.attachment.fileSize,
+    });
+
+    console.log("=== Attachment Saved ===");
+  }
+
+    return toDTO(asset);
 }
 
 export async function updateAsset(
@@ -173,10 +207,9 @@ export async function updateAsset(
   const data =
     knowledgeSchema.partial().parse(input);
 
-  const payload: Prisma.KnowledgeAssetUpdateInput =
-    {
-      ...data,
-    };
+  const payload: Prisma.KnowledgeAssetUpdateInput = {
+    ...data,
+  };
 
   if (data.title) {
     payload.slug =
@@ -184,12 +217,12 @@ export async function updateAsset(
   }
 
   const asset =
-  await updateKnowledgeAsset(
-    id,
-    payload
-  );
+    await updateKnowledgeAsset(
+      id,
+      payload
+    );
 
-return toDTO(asset);
+  return toDTO(asset);
 }
 
 export async function removeAsset(

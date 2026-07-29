@@ -34,7 +34,10 @@ export function findKnowledgeAssets(
   args: Prisma.KnowledgeAssetFindManyArgs,
   db: DB = prisma
 ) {
-  return db.knowledgeAsset.findMany(args);
+  return db.knowledgeAsset.findMany({
+    ...args,
+    include: DEFAULT_INCLUDE,
+  });
 }
 
 export function countKnowledgeAssets(

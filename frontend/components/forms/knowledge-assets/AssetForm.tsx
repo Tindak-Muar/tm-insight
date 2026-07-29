@@ -224,6 +224,8 @@ if (formData.file) {
             tags: formData.tags,
 
             status: formData.status,
+
+            attachment: uploadedFile,
           }),
         }
       );
