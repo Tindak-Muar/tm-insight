@@ -68,6 +68,24 @@ export function createKnowledgeAttachment(
   });
 }
 
+export function getKnowledgeAttachmentById(
+  id: number,
+  db: DB = prisma
+) {
+  return db.knowledgeAttachment.findUnique({
+    where: { id },
+  });
+}
+
+export function deleteKnowledgeAttachment(
+  id: number,
+  db: DB = prisma
+) {
+  return db.knowledgeAttachment.delete({
+    where: { id },
+  });
+}
+
 export function updateKnowledgeAsset(
   id: number,
   data: Prisma.KnowledgeAssetUpdateInput,
