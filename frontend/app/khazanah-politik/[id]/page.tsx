@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getKnowledgeAsset } from "@/lib/khazanah/service";
 import { STATUS_CONFIG } from "@/lib/khazanah/status";
 import DeleteButton from "@/components/khazanah/DeleteButton";
+import ExportMenu from "@/components/ui/ExportMenu";
 
 type Props = {
   params: Promise<{
@@ -73,25 +74,48 @@ console.log(statusConfig);
           Pinda
         </Link>
 
-        <button
-          disabled
-          className="rounded-lg border px-5 py-2 text-gray-400"
-        >
-          Export
-        </button>
+        <ExportMenu
+  groups={[
+    {
+  title: "Dokumen",
+  icon: "document",
+  options: [
+    {
+      label: "PDF",
+      href: `/api/export/document/pdf/${asset.id}`,
+    },
+    {
+      label: "Word (.docx)",
+      href: `/api/export/document/docx/${asset.id}`,
+    },
+  ],
+},
+    {
+      title: "Dataset",
+      icon: "dataset",
+      options: [
+        {
+          label: "PDF",
+          href: `/api/export/dataset/pdf/${asset.id}`,
+        },
+        {
+          label: "Excel",
+          href: `/api/export/dataset/excel/${asset.id}`,
+        },
+        {
+          label: "CSV",
+          href: `/api/export/dataset/csv/${asset.id}`,
+        },
+      ],
+    },
+  ]}
+/>
 
         <button
   className="rounded-lg border px-5 py-2"
 >
   Lampiran ({asset.attachments?.length ?? 0})
 </button>
-
-        <button
-          disabled
-          className="rounded-lg border px-5 py-2 text-gray-400"
-        >
-          Versi
-        </button>
 
         <button
           disabled

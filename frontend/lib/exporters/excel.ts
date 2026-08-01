@@ -1,17 +1,34 @@
 import ExcelJS from "exceljs";
 
-import { ExportAsset } from "./types";
+import { STATUS_CONFIG } from "@/lib/khazanah/status";
+import type { KnowledgeAssetDTO } from "@/lib/khazanah/types";
 
 export async function generateExcel(
-  data: ExportAsset[]
+  data: KnowledgeAssetDTO[]
 ): Promise<Buffer> {
-  const workbook = new ExcelJS.Workbook();
 
-  workbook.creator = "SINAR";
-  workbook.company = "TM Insight";
-  workbook.created = new Date();
+  const workbook =
+    new ExcelJS.Workbook();
 
-  const worksheet = workbook.addWorksheet("Khazanah Politik");
+  workbook.creator =
+    "SINARLab";
+
+  workbook.company =
+    "Tindak Muar";
+
+  workbook.subject =
+    "Khazanah Politik";
+
+  workbook.title =
+    "Dataset Khazanah Politik";
+
+  workbook.created =
+    new Date();
+
+  const worksheet =
+    workbook.addWorksheet(
+      "Khazanah Politik"
+    );
 
   worksheet.columns = [
     { header: "ID", key: "id", width: 8 },
@@ -25,7 +42,11 @@ export async function generateExcel(
     { header: "Status", key: "status", width: 15 },
     { header: "Sumber", key: "source", width: 25 },
     { header: "URL", key: "url", width: 40 },
-    { header: "Tarikh Dicipta", key: "createdAt", width: 22 },
+    {
+      header: "Tarikh Dicipta",
+      key: "createdAt",
+      width: 22,
+    },
   ];
 
   worksheet.getRow(1).font = {
@@ -38,20 +59,50 @@ export async function generateExcel(
   };
 
   data.forEach((item) => {
+
     worksheet.addRow({
+
       id: item.id,
+
       title: item.title,
+
       category: item.category,
-      subcategory: item.subcategory ?? "",
-      institution: item.institution ?? "",
-      state: item.state ?? "",
-      year: item.year ?? "",
-      author: item.author ?? "",
-      status: item.status,
-      source: item.source ?? "",
-      url: item.sourceUrl ?? "",
-      createdAt: new Date(item.createdAt).toLocaleString("ms-MY"),
+
+      subcategory:
+        item.subcategory ?? "",
+
+      institution:
+        item.institution ?? "",
+
+      state:
+        item.state ?? "",
+
+      year:
+        item.year ?? "",
+
+      author:
+        item.author ?? "",
+
+      status:
+        STATUS_CONFIG[
+          item.status
+        ].label,
+
+      source:
+        item.source ?? "",
+
+      url:
+        item.sourceUrl ?? "",
+
+      createdAt:
+        new Date(
+          item.createdAt
+        ).toLocaleDateString(
+          "ms-MY"
+        ),
+
     });
+
   });
 
   worksheet.views = [
@@ -61,7 +112,9 @@ export async function generateExcel(
     },
   ];
 
-  const buffer = await workbook.xlsx.writeBuffer();
+  const buffer =
+    await workbook.xlsx.writeBuffer();
 
   return Buffer.from(buffer);
+
 }
