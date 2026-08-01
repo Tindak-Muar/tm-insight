@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { getKnowledgeAsset } from "@/lib/khazanah/service";
+import { STATUS_CONFIG } from "@/lib/khazanah/status";
 import DeleteButton from "@/components/khazanah/DeleteButton";
 
 type Props = {
@@ -23,6 +24,10 @@ export default async function AssetDetailPage({
     notFound();
   }
 
+  const statusConfig = STATUS_CONFIG[asset.status];
+console.log("=== STATUS CONFIG ===");
+console.log(statusConfig);
+
   return (
     <div className="space-y-8">
 
@@ -43,18 +48,10 @@ export default async function AssetDetailPage({
         </div>
 
         <span
-          className={`rounded-full px-4 py-2 text-sm font-medium ${
-            asset.status === "PUBLISHED"
-              ? "bg-green-100 text-green-700"
-              : asset.status === "DRAFT"
-              ? "bg-yellow-100 text-yellow-700"
-              : asset.status === "ARCHIVED"
-              ? "bg-sky-100 text-sky-700"
-              : "bg-gray-200 text-gray-700"
-          }`}
-        >
-          {asset.status}
-        </span>
+  className={`rounded-full px-4 py-2 text-sm font-medium ${statusConfig.className}`}
+>
+  {statusConfig.label}
+</span>
 
       </div>
 
@@ -73,34 +70,34 @@ export default async function AssetDetailPage({
           href={`/khazanah-politik/${asset.id}/edit`}
           className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700"
         >
-          ✏️ Pinda
+          Pinda
         </Link>
 
         <button
           disabled
           className="rounded-lg border px-5 py-2 text-gray-400"
         >
-          📤 Export
+          Export
         </button>
 
         <button
   className="rounded-lg border px-5 py-2"
 >
-  📎 Lampiran ({asset.attachments?.length ?? 0})
+  Lampiran ({asset.attachments?.length ?? 0})
 </button>
 
         <button
           disabled
           className="rounded-lg border px-5 py-2 text-gray-400"
         >
-          🕒 Versi
+          Versi
         </button>
 
         <button
           disabled
           className="rounded-lg border px-5 py-2 text-gray-400"
         >
-          🤖 AI
+          AI
         </button>
 
         <div className="ml-auto">
@@ -117,7 +114,7 @@ export default async function AssetDetailPage({
       <div className="rounded-xl border bg-white p-8 shadow-sm">
 
         <h2 className="mb-6 text-2xl font-semibold">
-          ℹ️ Maklumat Aset
+          Maklumat Aset
         </h2>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -170,7 +167,7 @@ export default async function AssetDetailPage({
       <div className="rounded-xl border bg-white p-8 shadow-sm">
 
         <h2 className="mb-4 text-2xl font-semibold">
-          📝 Ringkasan
+          Ringkasan
         </h2>
 
         <p className="leading-8 whitespace-pre-line">
@@ -184,7 +181,7 @@ export default async function AssetDetailPage({
       <div className="rounded-xl border bg-white p-8 shadow-sm">
 
         <h2 className="mb-4 text-2xl font-semibold">
-          📄 Kandungan
+          Kandungan
         </h2>
 
         <div className="leading-8 whitespace-pre-line">
@@ -198,7 +195,7 @@ export default async function AssetDetailPage({
 <div className="rounded-xl border bg-white p-8 shadow-sm">
 
   <h2 className="mb-6 text-2xl font-semibold">
-    🏷️ Metadata
+    Metadata
   </h2>
 
   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -253,7 +250,7 @@ export default async function AssetDetailPage({
   <div className="mb-6 flex items-center justify-between">
 
     <h2 className="text-2xl font-semibold">
-      📎 Lampiran
+      Lampiran
     </h2>
 
     <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600">

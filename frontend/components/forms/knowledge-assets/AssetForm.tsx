@@ -141,7 +141,13 @@ export default function AssetForm({
         try {
       setLoading(true);
 
-      let uploadedFile = null;
+      let uploadedFile: {
+  originalName: string;
+  storedName: string;
+  filePath: string;
+  fileType?: string;
+  fileSize?: number;
+} | undefined;
 
 if (formData.file) {
   const uploadForm = new FormData();
@@ -187,46 +193,45 @@ if (formData.file) {
           },
 
           body: JSON.stringify({
-            title: formData.title,
+  title: formData.title,
 
-            category: formData.category,
+  category: formData.category,
 
-            subcategory:
-              formData.subcategory,
+  subcategory: formData.subcategory,
 
-            institution:
-              formData.institution,
+  institution: formData.institution,
 
-            state: formData.state,
+  state: formData.state,
 
-            year:
-  formData.year === ""
-    ? undefined
-    : Number(formData.year),
+  year:
+    formData.year === ""
+      ? undefined
+      : Number(formData.year),
 
-            author: formData.author,
+  author: formData.author,
 
-            publishedAt:
-              formData.publishedAt || null,
+  publishedAt:
+    formData.publishedAt || null,
 
-            summary: formData.summary,
+  summary: formData.summary,
 
-            content: formData.content,
+  content: formData.content,
 
-            source: formData.source,
+  source: formData.source,
 
-            sourceUrl:
-              formData.sourceUrl,
+  sourceUrl: formData.sourceUrl,
 
-            sourceReference:
-              formData.sourceReference,
+  sourceReference:
+    formData.sourceReference,
 
-            tags: formData.tags,
+  tags: formData.tags,
 
-            status: formData.status,
+  status: formData.status,
 
-            attachment: uploadedFile,
-          }),
+  ...(uploadedFile && {
+    attachment: uploadedFile,
+  }),
+}),
         }
       );
 
