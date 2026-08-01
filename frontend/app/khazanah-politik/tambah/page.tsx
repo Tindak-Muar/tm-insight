@@ -7,7 +7,7 @@ export default function TambahAsetPage() {
 
       <div>
         <h1 className="flex items-center gap-3 text-4xl font-bold">
-  <LibraryBig className="h-9 w-9 text-blue-600" />
+  <LibraryBig className="h-9 w-9 text-red-700" />
   Tambah Aset Pengetahuan
 </h1>
 

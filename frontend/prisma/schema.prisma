@@ -1,183 +1,61 @@
-generator client {
-  provider = "prisma-client-js"
-}
+model KnowledgeVersion {
 
-datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
-}
-
-model KnowledgeAsset {
   id Int @id @default(autoincrement())
 
-  // Basic Information
-  title String
-  slug  String @unique
+  // Relation
+  assetId Int
 
-  category    String
+  asset KnowledgeAsset
+    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  // Version
+  version Int
+
+  // Snapshot
+  title String
+  slug String
+
+  category String
   subcategory String?
 
   institution String?
-  state       String?
-  year        Int?
+  state String?
+  year Int?
 
   author String?
 
-  // Content
   summary String?
   content String?
 
-  // Source
-  source          String?
-  sourceUrl       String?
+  source String?
+  sourceUrl String?
   sourceReference String?
 
-  // Metadata
   tags String?
 
-  // Workflow
-  status  String @default("DRAFT")
-  version Int    @default(1)
+  status String
 
-  // Publishing
   publishedAt DateTime?
   publishedBy String?
 
   archivedAt DateTime?
   archivedBy String?
 
-  // Temporary (akan dibuang apabila upload module siap)
   filePath String?
 
   // Audit
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  attachments     KnowledgeAttachment[]
-  versions        KnowledgeVersion[]
-  sourceRelations KnowledgeRelation[]   @relation("SourceRelation")
-  targetRelations KnowledgeRelation[]   @relation("TargetRelation")
-
-  @@index([category])
-  @@index([status])
-  @@index([updatedAt])
-}
-
-model KnowledgeAttachment {
-
-  id Int @id @default(autoincrement())
-
-  assetId Int
-
-  originalName String
-  storedName   String
-
-  filePath String
-
-  fileType String?
-  fileSize Int?
-
-  uploadedBy String?
-
-  createdAt DateTime @default(now())
-
- asset KnowledgeAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  @@index([assetId])
-}
-
-model KnowledgeVersion {
-  id Int @id @default(autoincrement())
-
-  assetId Int
-
-  version Int
-
-  title String
-
-  summary String?
-  content String?
-
   updatedBy String?
 
+  changeNote String?
+
   createdAt DateTime @default(now())
 
-  asset KnowledgeAsset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  @@unique([assetId, version])
 
   @@index([assetId])
-}
 
-model KnowledgeRelation {
-  id Int @id @default(autoincrement())
+  @@index([assetId, version])
 
-  sourceAssetId Int
-  targetAssetId Int
-
-  relationType String
-
-  createdAt DateTime @default(now())
-
-  sourceAsset KnowledgeAsset @relation("SourceRelation", fields: [sourceAssetId], references: [id], onDelete: Cascade)
-
-  targetAsset KnowledgeAsset @relation("TargetRelation", fields: [targetAssetId], references: [id], onDelete: Cascade)
-
-  @@unique([sourceAssetId, targetAssetId, relationType])
-  @@index([sourceAssetId])
-  @@index([targetAssetId])
-}
-
-model KnowledgeImportLog {
-  id Int @id @default(autoincrement())
-
-  fileName String
-  fileType String
-
-  importedBy String?
-
-  totalRecords Int?
-  successCount Int?
-  failedCount  Int?
-
-  status String @default("SUCCESS")
-
-  remarks String?
-
-  createdAt DateTime @default(now())
-}
-
-model KnowledgeImportJob {
-  id Int @id @default(autoincrement())
-
-  fileName     String
-  originalName String
-  filePath     String
-
-  fileType String
-  mimeType String?
-
-  fileSize Int?
-
-  documentType String?
-
-  uploadedBy String?
-
-  status String @default("UPLOADED")
-
-  progress Int @default(0)
-
-  errorMessage String?
-
-  extractedText String?
-
-  aiSummary String?
-
-  aiMetadata String?
-
-  startedAt   DateTime?
-  completedAt DateTime?
-
-  createdAt DateTime @default(now())
-
-  @@index([status])
   @@index([createdAt])
+
 }

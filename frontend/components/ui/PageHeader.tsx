@@ -14,8 +14,8 @@ export default function PageHeader({
   return (
     <div className="mb-8 border-b border-gray-200 pb-6">
       <div className="flex items-center gap-3">
-        <div className="rounded-lg bg-blue-100 p-3">
-          <Icon className="h-6 w-6 text-blue-600" />
+        <div className="rounded-lg bg-red-100 p-3">
+          <Icon className="h-6 w-6 text-red-600" />
         </div>
 
         <div>

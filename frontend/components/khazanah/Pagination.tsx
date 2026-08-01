@@ -153,7 +153,7 @@ export default function Pagination({
             }
             className={`min-w-[44px] rounded-lg px-4 py-2 transition ${
               currentPage === page
-                ? "bg-blue-600 font-semibold text-white shadow"
+                ? "bg-red-600 font-semibold text-white shadow"
                 : "border hover:bg-gray-100"
             }`}
           >

@@ -36,7 +36,7 @@ export default function Select({
           className={cn(
   "h-10 w-full appearance-none rounded-lg border border-slate-300 bg-white px-3 pr-10 text-sm",
   "transition-colors duration-200",
-  "focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500",
+  "focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500",
   "disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400",
   className
 )}

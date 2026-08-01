@@ -50,8 +50,8 @@ export default function Alert({
     info: {
       icon: Info,
       container:
-        "border-blue-200 bg-blue-50 text-blue-800",
-      iconColor: "text-blue-600",
+        "border-red-200 bg-red-50 text-red-800",
+      iconColor: "text-red-600",
       defaultTitle: "Makluman",
     },
   };

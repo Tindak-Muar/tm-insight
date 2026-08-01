@@ -32,7 +32,7 @@ export default async function EditAssetPage({
 
       <div>
   <h1 className="flex items-center gap-3 text-4xl font-bold">
-    <FilePenLine className="h-9 w-9 text-blue-600" />
+    <FilePenLine className="h-9 w-9 text-red-600" />
     Kemas Kini Aset Pengetahuan
   </h1>
 

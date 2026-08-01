@@ -77,7 +77,7 @@ export default function AssetsTable({
 
                 <Link
                   href={`/khazanah-politik/${asset.id}`}
-                  className="font-semibold text-blue-600 hover:underline"
+                  className="font-semibold text-red-600 hover:underline"
                 >
                   {asset.title}
                 </Link>

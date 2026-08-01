@@ -23,7 +23,7 @@ export default function Input({
         {...props}
         className={cn(
           "w-full rounded-lg border border-gray-300 px-4 py-3",
-          "focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100",
+          "focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100",
           error &&
             "border-red-500 focus:border-red-500 focus:ring-red-100",
           className

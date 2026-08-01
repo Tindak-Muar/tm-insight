@@ -25,7 +25,7 @@ export default function Textarea({
         {...props}
         className={cn(
           "w-full rounded-lg border border-gray-300 px-4 py-3",
-          "focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100",
+          "focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-100",
           "disabled:bg-gray-100 disabled:text-gray-500",
           "resize-y",
           error &&

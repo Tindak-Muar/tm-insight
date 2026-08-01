@@ -1,74 +1,157 @@
+import {
+  Newspaper,
+  RadioTower,
+  FolderOpen,
+  BrainCircuit,
+} from "lucide-react";
+
 import DashboardCard from "@/components/dashboard/DashboardCard";
-import PageHeader from "@/components/ui/PageHeader";
-import { LayoutDashboard } from "lucide-react";
+import { getDashboardStats } from "@/lib/dashboard/stats";
 
-export default function MarkasPage() {
+export default async function MarkasPage() {
+  const stats = await getDashboardStats();
+
   return (
-    <div className="space-y-8">
-      <PageHeader
-        title="Markas"
-        description="Pusat kawalan dan pemantauan keseluruhan platform SINAR."
-        icon={LayoutDashboard}
-      />
+    <div className="space-y-6">
 
-      <div className="grid grid-cols-4 gap-6">
-        <DashboardCard title="Berita" value={120} />
-        <DashboardCard title="Radar" value={35} />
-        <DashboardCard title="Dokumen" value={56} />
-        <DashboardCard title="Strategis AI" value={8} />
-      </div>
+      {/* Welcome */}
 
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
-        <h2 className="mb-3 text-xl font-semibold">
-          Ringkasan Strategis AI
-        </h2>
+      <section>
 
-        <p className="leading-7 text-gray-600">
-          Selamat datang ke SINAR.
-          <br />
-          <br />
-          Tiada ringkasan tersedia buat masa ini.
-          <br />
-          Apabila modul Radar dan Khazanah Politik diaktifkan,
-          Strategis AI akan menyediakan ringkasan harian secara automatik.
+        <h1 className="text-4xl font-bold text-gray-900">
+          Selamat datang ke{" "}
+          <span className="text-red-700">
+            SINARLabs
+          </span>
+          , Ahmad Anwar.
+        </h1>
+
+        <p className="mt-2 text-lg text-gray-600">
+          Pusat kawalan dan pemantauan keseluruhan platform SINAR.
         </p>
-      </div>
 
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-xl font-semibold">
-          Aktiviti Terkini
-        </h2>
+      </section>
 
-        <ul className="space-y-3 text-gray-600">
-          <li>Tiada dokumen baharu.</li>
-          <li>Tiada kemas kini daripada Radar.</li>
-          <li>Tiada analisis baharu daripada Strategis AI.</li>
-        </ul>
-      </div>
+      {/* Dashboard Stats */}
 
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-xl font-semibold">
-          Tugasan Hari Ini
-        </h2>
+      <section className="grid grid-cols-4 gap-6">
 
-        <ul className="space-y-3">
-          <li>☐ Kemas Kini Khazanah Politik</li>
-          <li>☐ Semak Radar</li>
-          <li>☐ Jana Ringkasan AI</li>
-        </ul>
-      </div>
+        <DashboardCard
+          title="Berita"
+          value={stats.berita}
+          description="Artikel keseluruhan"
+          icon={Newspaper}
+        />
 
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-xl font-semibold">
-          Status Sistem
-        </h2>
+        <DashboardCard
+          title="Radar"
+          value={stats.radar}
+          description="Isu dipantau"
+          icon={RadioTower}
+        />
 
-        <div className="space-y-2 text-gray-600">
-          <p>🟢 SINAR Online</p>
-          <p>🟢 Strategis AI Bersedia</p>
-          <p>🟢 Radar Aktif</p>
+        <DashboardCard
+          title="Dokumen"
+          value={stats.dokumen}
+          description="Dokumen & aset"
+          icon={FolderOpen}
+        />
+
+        <DashboardCard
+          title="Strategis AI"
+          value={stats.strategisAI}
+          description="Analisis AI"
+          icon={BrainCircuit}
+        />
+
+      </section>
+
+      {/* Main Content */}
+
+      <section className="grid grid-cols-5 gap-6">
+
+        {/* Aktiviti Terkini */}
+
+        <div className="col-span-3 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+          <div className="mb-5 flex items-center justify-between">
+
+            <h2 className="text-xl font-semibold">
+              Aktiviti Terkini
+            </h2>
+
+            <button className="text-sm font-medium text-red-700 hover:underline">
+              Lihat Semua
+            </button>
+
+          </div>
+
+          <div className="space-y-4">
+
+            <div className="flex items-start justify-between">
+
+              <div>
+
+                <p className="font-medium">
+                  Tiada aktiviti direkodkan.
+                </p>
+
+                <p className="text-sm text-gray-500">
+                  Aktiviti sistem akan dipaparkan di sini.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
-      </div>
+
+        {/* Strategis AI */}
+
+        <div className="col-span-2 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+
+          <div className="mb-5 flex items-center justify-between">
+
+            <h2 className="text-xl font-semibold">
+              Ringkasan Strategis AI
+            </h2>
+
+            <button className="text-sm font-medium text-red-700 hover:underline">
+              Buka Modul
+            </button>
+
+          </div>
+
+          <ul className="space-y-3 text-gray-600">
+
+            <li>
+              • Tiada analisis tersedia.
+            </li>
+
+            <li>
+              • Strategis AI akan menjana ringkasan secara automatik apabila modul diaktifkan.
+            </li>
+
+          </ul>
+
+        </div>
+
+      </section>
+
+      {/* Integrasi */}
+
+      <section className="flex justify-end">
+
+        <button className="rounded-xl border border-red-300 px-6 py-3 font-medium text-red-700 transition hover:bg-red-50">
+
+          Urus Integrasi
+
+        </button>
+
+      </section>
+
     </div>
   );
 }

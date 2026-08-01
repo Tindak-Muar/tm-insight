@@ -73,7 +73,7 @@ export default function SearchBar() {
             setKeyword(e.target.value)
           }
           placeholder="Cari tajuk, penulis, ringkasan atau tag..."
-          className="flex-1 rounded-lg border px-4 py-3 focus:border-blue-500 focus:outline-none"
+          className="flex-1 rounded-lg border px-4 py-3 focus:border-red-500 focus:outline-none"
         />
 
         <Button

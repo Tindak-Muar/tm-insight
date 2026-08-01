@@ -118,7 +118,7 @@ image/webp"
 
               <div className="flex gap-3">
 
-                <FileText className="mt-1 h-6 w-6 text-blue-600" />
+                <FileText className="mt-1 h-6 w-6 text-red-600" />
 
                 <div>
 
