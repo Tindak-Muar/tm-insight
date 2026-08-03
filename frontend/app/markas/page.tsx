@@ -146,7 +146,7 @@ export default async function MarkasPage() {
 
         <button className="rounded-xl border border-red-300 px-6 py-3 font-medium text-red-700 transition hover:bg-red-50">
 
-          Urus Integrasi
+          Gerbang Integrasi
 
         </button>
 

@@ -98,16 +98,16 @@ export default function Sidebar() {
             </Link>
 
             <Link
-              href="/markas/integrasi"
-              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition ${
-                pathname === "/markas/integrasi"
-                  ? "bg-red-100 font-medium text-red-700"
-                  : "text-gray-600 hover:bg-red-50 hover:text-red-700"
-              }`}
-            >
-              <Plug size={14} />
-              Integrasi
-            </Link>
+  href="/markas/gerbang-integrasi"
+  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition ${
+    pathname === "/markas/gerbang-integrasi"
+      ? "bg-red-100 font-medium text-red-700"
+      : "text-gray-600 hover:bg-red-50 hover:text-red-700"
+  }`}
+>
+  <Plug size={14} />
+  Gerbang Integrasi
+</Link>
 
           </div>
 
