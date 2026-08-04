@@ -13,7 +13,7 @@ import CategorySection from "./CategorySection";
 const categories: IntegrationCategory[] = [
   "AI",
   "Komunikasi",
-  "Penyimpanan",
+  "Storan Awan",
   "Analitik",
   "Automasi",
 ];

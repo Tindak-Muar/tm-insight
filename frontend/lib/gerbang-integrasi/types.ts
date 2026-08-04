@@ -1,7 +1,7 @@
 export type IntegrationCategory =
   | "AI"
   | "Komunikasi"
-  | "Penyimpanan"
+  | "Storan Awan"
   | "Analitik"
   | "Automasi"
   | "Produktiviti"

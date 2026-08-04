@@ -8,7 +8,7 @@ export const googleDriveProvider: IntegrationProvider = {
   description:
     "Integrasi Google Drive untuk penyimpanan, sandaran dan perkongsian dokumen.",
 
-  category: "Penyimpanan",
+  category: "Storan Awan",
 
   status: "DISCONNECTED",
 

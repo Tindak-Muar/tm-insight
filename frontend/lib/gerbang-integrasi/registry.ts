@@ -24,7 +24,7 @@ import {
 import {
   googleDriveProvider,
   oneDriveProvider,
-} from "./providers/penyimpanan";
+} from "./providers/storan-awan";
 
 // Analitik
 

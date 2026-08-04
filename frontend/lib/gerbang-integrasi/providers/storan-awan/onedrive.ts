@@ -8,7 +8,7 @@ export const oneDriveProvider: IntegrationProvider = {
   description:
     "Integrasi Microsoft OneDrive untuk penyimpanan awan dan pengurusan dokumen.",
 
-  category: "Penyimpanan",
+  category: "Storan Awan",
 
   status: "DISCONNECTED",
 
