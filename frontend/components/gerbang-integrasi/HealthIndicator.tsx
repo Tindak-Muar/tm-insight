@@ -1,3 +1,5 @@
+import { Circle } from "lucide-react";
+
 import { HealthStatus } from "@/lib/gerbang-integrasi";
 
 type HealthIndicatorProps = {
@@ -6,27 +8,23 @@ type HealthIndicatorProps = {
 
 const healthConfig = {
   HEALTHY: {
-    label: "Healthy",
-    dot: "bg-green-500",
-    text: "text-green-700",
+    label: "Normal",
+    color: "text-green-600",
   },
 
   WARNING: {
-    label: "Warning",
-    dot: "bg-yellow-500",
-    text: "text-yellow-700",
+    label: "Amaran",
+    color: "text-yellow-500",
   },
 
   CRITICAL: {
-    label: "Critical",
-    dot: "bg-red-500",
-    text: "text-red-700",
+    label: "Kritikal",
+    color: "text-red-600",
   },
 
   UNKNOWN: {
-    label: "Unknown",
-    dot: "bg-gray-400",
-    text: "text-gray-600",
+    label: "Belum Diuji",
+    color: "text-gray-400",
   },
 } as const;
 
@@ -36,16 +34,15 @@ export default function HealthIndicator({
   const config = healthConfig[health];
 
   return (
-    <div className="flex items-center gap-2">
-      <span
-        className={`h-2.5 w-2.5 rounded-full ${config.dot}`}
+    <div
+      className={`inline-flex items-center gap-2 text-sm font-medium ${config.color}`}
+    >
+      <Circle
+        className="h-3 w-3 fill-current"
+        strokeWidth={0}
       />
 
-      <span
-        className={`text-sm font-medium ${config.text}`}
-      >
-        {config.label}
-      </span>
+      <span>{config.label}</span>
     </div>
   );
 }

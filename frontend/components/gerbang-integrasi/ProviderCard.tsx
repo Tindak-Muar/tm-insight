@@ -1,3 +1,5 @@
+import { ChevronRight } from "lucide-react";
+
 import { IntegrationProvider } from "@/lib/gerbang-integrasi";
 
 import { providerIcons } from "./providerIcons";
@@ -14,65 +16,54 @@ export default function ProviderCard({
   const Icon = providerIcons[provider.id];
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:border-red-200 hover:shadow-lg">
 
-      <div className="flex items-start gap-4">
+      {/* Header */}
 
-        <div className="rounded-lg bg-red-50 p-3">
-          <Icon className="h-6 w-6 text-red-700" />
+      <div className="flex items-center gap-3">
+
+        <div className="rounded-xl bg-red-50 p-3">
+          <Icon className="h-9 w-9 text-red-700" />
         </div>
 
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
 
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="truncate text-lg font-bold text-gray-900">
             {provider.name}
           </h3>
 
-          <p className="mt-1 text-sm leading-6 text-gray-500">
-            {provider.description}
-          </p>
+          <div className="mt-1">
+            <ConnectionBadge status={provider.status} />
+          </div>
 
         </div>
 
       </div>
 
-      <div className="my-6 border-t" />
+      {/* Status API */}
 
-      <div className="space-y-4">
+      <div className="mt-3">
 
-        <div className="flex items-center justify-between">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
+          Status API
+        </p>
 
-          <span className="text-sm font-medium text-gray-500">
-            Status
-          </span>
-
-          <ConnectionBadge
-            status={provider.status}
-          />
-
-        </div>
-
-        <div className="flex items-center justify-between">
-
-          <span className="text-sm font-medium text-gray-500">
-            Kesihatan
-          </span>
-
-          <HealthIndicator
-            health={provider.health}
-          />
-
-        </div>
+        <HealthIndicator health={provider.health} />
 
       </div>
 
-      <div className="mt-6">
+      {/* Action */}
+
+      <div className="mt-3 flex justify-end">
 
         <button
           type="button"
-          className="w-full rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-red-800"
+          className="inline-flex items-center gap-1 text-sm font-medium text-red-700 transition-all hover:gap-2 hover:text-red-800"
         >
           Konfigurasi
+
+          <ChevronRight className="h-4 w-4" />
+
         </button>
 
       </div>

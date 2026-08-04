@@ -25,9 +25,8 @@ export default function CategorySection({
         </h2>
 
         <p className="mt-1 text-sm text-gray-500">
-          {providers.length} provider
-          {providers.length > 1 ? "s" : ""}
-        </p>
+          {providers.length} integrasi
+            </p>
 
       </div>
 

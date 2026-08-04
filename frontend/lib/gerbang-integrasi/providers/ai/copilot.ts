@@ -3,10 +3,10 @@ import { IntegrationProvider } from "../../types";
 export const copilotProvider: IntegrationProvider = {
   id: "copilot",
 
-  name: "GitHub Copilot",
+  name: "Microsoft Copilot",
 
   description:
-    "Pembantu pembangunan perisian berasaskan AI daripada GitHub.",
+    "Pembantu pembangunan perisian berasaskan AI daripada Microsoft.",
 
   category: "AI",
 

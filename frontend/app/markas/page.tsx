@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import {
   Newspaper,
   RadioTower,
@@ -12,27 +14,38 @@ export default async function MarkasPage() {
   const stats = await getDashboardStats();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
 
-      {/* Welcome */}
+      {/* Header */}
 
-      <section>
+      <section className="flex items-start justify-between">
 
-        <h1 className="text-4xl font-bold text-gray-900">
-          Selamat datang ke{" "}
-          <span className="text-red-700">
-            SINARLabs
-          </span>
-          , Ahmad Anwar.
-        </h1>
+        <div>
 
-        <p className="mt-2 text-lg text-gray-600">
-          Pusat kawalan dan pemantauan keseluruhan platform SINAR.
-        </p>
+          <h1 className="text-4xl font-bold text-gray-900">
+            Selamat datang ke{" "}
+            <span className="text-red-700">
+              SINARLabs
+            </span>
+            , Ahmad Anwar.
+          </h1>
+
+          <p className="mt-2 text-lg text-gray-600">
+            Pusat kawalan dan pemantauan keseluruhan platform SINAR.
+          </p>
+
+        </div>
+
+        <Link
+          href="/markas/gerbang-integrasi"
+          className="inline-flex items-center rounded-xl border border-red-300 px-6 py-3 text-sm font-medium text-red-700 transition hover:bg-red-700 hover:text-white"
+        >
+          Urus Integrasi
+        </Link>
 
       </section>
 
-      {/* Dashboard Stats */}
+      {/* Statistik */}
 
       <section className="grid grid-cols-4 gap-6">
 
@@ -66,7 +79,7 @@ export default async function MarkasPage() {
 
       </section>
 
-      {/* Main Content */}
+      {/* Kandungan */}
 
       <section className="grid grid-cols-5 gap-6">
 
@@ -80,35 +93,27 @@ export default async function MarkasPage() {
               Aktiviti Terkini
             </h2>
 
-            <button className="text-sm font-medium text-red-700 hover:underline">
+            <button className="text-sm font-medium text-red-700 transition hover:underline">
               Lihat Semua
             </button>
 
           </div>
 
-          <div className="space-y-4">
+          <div>
 
-            <div className="flex items-start justify-between">
+            <p className="font-medium">
+              Tiada aktiviti direkodkan.
+            </p>
 
-              <div>
-
-                <p className="font-medium">
-                  Tiada aktiviti direkodkan.
-                </p>
-
-                <p className="text-sm text-gray-500">
-                  Aktiviti sistem akan dipaparkan di sini.
-                </p>
-
-              </div>
-
-            </div>
+            <p className="mt-1 text-sm text-gray-500">
+              Aktiviti sistem akan dipaparkan di sini.
+            </p>
 
           </div>
 
         </div>
 
-        {/* Strategis AI */}
+        {/* Ringkasan Strategis AI */}
 
         <div className="col-span-2 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
 
@@ -118,7 +123,7 @@ export default async function MarkasPage() {
               Ringkasan Strategis AI
             </h2>
 
-            <button className="text-sm font-medium text-red-700 hover:underline">
+            <button className="text-sm font-medium text-red-700 transition hover:underline">
               Buka Modul
             </button>
 
@@ -137,18 +142,6 @@ export default async function MarkasPage() {
           </ul>
 
         </div>
-
-      </section>
-
-      {/* Integrasi */}
-
-      <section className="flex justify-end">
-
-        <button className="rounded-xl border border-red-300 px-6 py-3 font-medium text-red-700 transition hover:bg-red-50">
-
-          Gerbang Integrasi
-
-        </button>
 
       </section>
 

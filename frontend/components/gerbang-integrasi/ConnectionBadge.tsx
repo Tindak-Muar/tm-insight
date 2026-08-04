@@ -1,3 +1,5 @@
+import { Circle } from "lucide-react";
+
 import { IntegrationStatus } from "@/lib/gerbang-integrasi";
 
 type ConnectionBadgeProps = {
@@ -6,33 +8,28 @@ type ConnectionBadgeProps = {
 
 const statusConfig = {
   CONNECTED: {
-    label: "Connected",
-    className:
-      "bg-green-100 text-green-700 border border-green-200",
+    label: "Disambungkan",
+    color: "text-green-600",
   },
 
   DISCONNECTED: {
-    label: "Disconnected",
-    className:
-      "bg-gray-100 text-gray-700 border border-gray-200",
+    label: "Tidak Disambungkan",
+    color: "text-gray-400",
   },
 
   CONNECTING: {
-    label: "Connecting",
-    className:
-      "bg-yellow-100 text-yellow-700 border border-yellow-200",
+    label: "Menyambung",
+    color: "text-yellow-500",
   },
 
   ERROR: {
-    label: "Error",
-    className:
-      "bg-red-100 text-red-700 border border-red-200",
+    label: "Ralat",
+    color: "text-red-600",
   },
 
   DISABLED: {
-    label: "Disabled",
-    className:
-      "bg-slate-100 text-slate-600 border border-slate-200",
+    label: "Nyahaktif",
+    color: "text-slate-400",
   },
 } as const;
 
@@ -42,10 +39,15 @@ export default function ConnectionBadge({
   const config = statusConfig[status];
 
   return (
-    <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${config.className}`}
+    <div
+      className={`inline-flex items-center gap-2 text-sm font-medium ${config.color}`}
     >
-      {config.label}
-    </span>
+      <Circle
+        className="h-3 w-3 fill-current"
+        strokeWidth={0}
+      />
+
+      <span>{config.label}</span>
+    </div>
   );
 }
