@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 
 import {
   getConfiguration,
-} from "@/lib/gerbang-integrasi/configurationEngine";
+} from "@/lib/gerbang-integrasi/services/configurationEngine";
 
 import ConfigurationForm from "./ConfigurationForm";
 

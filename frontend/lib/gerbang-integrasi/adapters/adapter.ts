@@ -2,43 +2,48 @@
  * ============================================================
  * SINARLabs
  * Sprint 3
- * Adapter Interface
+ * Gerbang Integrasi
+ *
+ * Provider Adapter Interface
  * ============================================================
  */
 
-import { ProviderConfigurationValues } from "@/types/configurationValue";
+import {
+  ConnectionTestRequest,
+  ConnectionTestResult,
+} from "@/types/connection";
+
+import {
+  ProviderConfigurationValues,
+} from "@/types/configurationValue";
 
 /**
- * Keputusan ujian sambungan.
- */
-export interface ConnectionResult {
-  success: boolean;
-
-  message: string;
-
-  responseTime?: number;
-}
-
-/**
- * Kontrak rasmi semua adapter penyedia.
+ * Kontrak rasmi semua Provider Adapter.
+ *
+ * Semua adapter WAJIB melaksanakan interface ini.
  */
 export interface ProviderAdapter {
   /**
    * ID penyedia.
    */
-  providerId: string;
-
-  /**
-   * Menyemak konfigurasi.
-   */
-  validate(
-    configuration: ProviderConfigurationValues
-  ): boolean;
+  readonly providerId: string;
 
   /**
    * Menguji sambungan.
    */
   testConnection(
+    request: ConnectionTestRequest
+  ): Promise<ConnectionTestResult>;
+
+  /**
+   * Menyahkan konfigurasi.
+   */
+  disconnect?(): Promise<void>;
+
+  /**
+   * Menyemak sama ada konfigurasi sah.
+   */
+  validateConfiguration?(
     configuration: ProviderConfigurationValues
-  ): Promise<ConnectionResult>;
+  ): Promise<boolean>;
 }

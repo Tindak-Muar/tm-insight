@@ -23,6 +23,15 @@ export type FieldType =
   | "switch";
 
 /**
+ * Nilai yang boleh disimpan oleh sesuatu medan.
+ */
+export type FieldValue =
+  | string
+  | number
+  | boolean
+  | undefined;
+
+/**
  * Pilihan untuk medan jenis "select".
  */
 export interface FieldOption {
@@ -60,9 +69,17 @@ export interface ConfigurationField {
   placeholder?: string;
 
   /**
-   * Nilai lalai.
+   * Nilai lalai daripada Configuration Registry.
    */
-  defaultValue?: string | number | boolean;
+  defaultValue?: FieldValue;
+
+  /**
+   * Nilai semasa.
+   *
+   * Digunakan oleh Configuration Form ketika pengguna
+   * mengubah nilai konfigurasi.
+   */
+  value?: FieldValue;
 
   /**
    * Medan wajib diisi.

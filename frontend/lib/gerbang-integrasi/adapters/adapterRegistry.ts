@@ -2,6 +2,8 @@
  * ============================================================
  * SINARLabs
  * Sprint 3
+ * Gerbang Integrasi
+ *
  * Adapter Registry
  * ============================================================
  */
@@ -9,14 +11,12 @@
 import { ProviderAdapter } from "./adapter";
 
 /**
- * Registry rasmi semua adapter penyedia.
+ * Registry semua Provider Adapter.
  *
  * Sprint 3:
- * Masih kosong.
- *
- * Adapter akan didaftarkan secara berperingkat.
+ * Masih kosong sehingga adapter pertama dibina.
  */
-const adapterRegistry = new Map<string, ProviderAdapter>();
+const registry = new Map<string, ProviderAdapter>();
 
 /**
  * Mendaftarkan adapter.
@@ -24,35 +24,39 @@ const adapterRegistry = new Map<string, ProviderAdapter>();
 export function registerAdapter(
   adapter: ProviderAdapter
 ): void {
-  adapterRegistry.set(
-    adapter.providerId,
-    adapter
-  );
+  registry.set(adapter.providerId, adapter);
 }
 
 /**
- * Mendapatkan adapter berdasarkan ID penyedia.
+ * Mendapatkan adapter berdasarkan providerId.
  */
 export function getAdapter(
   providerId: string
 ): ProviderAdapter | undefined {
-  return adapterRegistry.get(providerId);
+  return registry.get(providerId);
 }
 
 /**
- * Menyemak sama ada adapter telah didaftarkan.
+ * Menyemak kewujudan adapter.
  */
 export function hasAdapter(
   providerId: string
 ): boolean {
-  return adapterRegistry.has(providerId);
+  return registry.has(providerId);
 }
 
 /**
  * Mendapatkan semua adapter.
  */
-export function getAdapters(): ProviderAdapter[] {
-  return Array.from(
-    adapterRegistry.values()
-  );
+export function getAllAdapters(): ProviderAdapter[] {
+  return Array.from(registry.values());
+}
+
+/**
+ * Membuang semua adapter.
+ *
+ * Digunakan untuk testing.
+ */
+export function clearAdapters(): void {
+  registry.clear();
 }
