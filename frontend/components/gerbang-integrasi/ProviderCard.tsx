@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+
 import { ChevronRight } from "lucide-react";
 
 import { IntegrationProvider } from "@/lib/gerbang-integrasi";
@@ -13,6 +17,7 @@ type ProviderCardProps = {
 export default function ProviderCard({
   provider,
 }: ProviderCardProps) {
+
   const Icon = providerIcons[provider.id];
 
   return (
@@ -23,7 +28,9 @@ export default function ProviderCard({
       <div className="flex items-center gap-3">
 
         <div className="rounded-xl bg-red-50 p-3">
+
           <Icon className="h-9 w-9 text-red-700" />
+
         </div>
 
         <div className="min-w-0 flex-1">
@@ -54,17 +61,16 @@ export default function ProviderCard({
 
       {/* Action */}
 
-      <div className="mt-3 flex justify-end">
+      <div className="mt-4 flex justify-end">
 
-        <button
-          type="button"
+        <Link
+          href="/markas/gerbang-integrasi/konfigurasi"
           className="inline-flex items-center gap-1 text-sm font-medium text-red-700 transition-all hover:gap-2 hover:text-red-800"
         >
           Konfigurasi
 
           <ChevronRight className="h-4 w-4" />
-
-        </button>
+        </Link>
 
       </div>
 

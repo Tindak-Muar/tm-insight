@@ -29,3 +29,18 @@
 ### Status
 
 - Sprint 3 Architecture Frozen.
+
+## v0.8.0
+
+### Sprint 3 - Gerbang Integrasi
+
+- Provider Configuration Engine
+- Configuration Registry
+- Configuration Store
+- Validation Service
+- Adapter Pattern
+- Adapter Registry
+- Mock OpenAI Adapter
+- Connection Testing
+- Connection Result Dialog
+- Live Status Update
