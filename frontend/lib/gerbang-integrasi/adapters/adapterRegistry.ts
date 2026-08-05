@@ -10,11 +10,12 @@
 
 import { ProviderAdapter } from "./adapter";
 
+import {
+  openAIAdapter,
+} from "./providers";
+
 /**
  * Registry semua Provider Adapter.
- *
- * Sprint 3:
- * Masih kosong sehingga adapter pertama dibina.
  */
 const registry = new Map<string, ProviderAdapter>();
 
@@ -60,3 +61,11 @@ export function getAllAdapters(): ProviderAdapter[] {
 export function clearAdapters(): void {
   registry.clear();
 }
+
+/**
+ * ============================================================
+ * Auto Registration
+ * ============================================================
+ */
+
+registerAdapter(openAIAdapter);

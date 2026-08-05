@@ -13,20 +13,30 @@ import {
   loadConfiguration,
   resetConfiguration,
   saveConfiguration,
+  testConnection,
 } from "@/lib/gerbang-integrasi/services/configurationEngine";
 
-import { ProviderConfigurationValues } from "@/types/configurationValue";
+import {
+  ConnectionTestRequest,
+} from "@/types/connection";
+
+import {
+  ProviderConfigurationValues,
+} from "@/types/configurationValue";
 
 export function useProviderConfiguration() {
+
   /**
-   * Mendapatkan konfigurasi penyedia.
+   * Mendapatkan konfigurasi.
    */
-  function load(providerId: string) {
+  function load(
+    providerId: string
+  ) {
     return loadConfiguration(providerId);
   }
 
   /**
-   * Menyimpan konfigurasi penyedia.
+   * Menyimpan konfigurasi.
    */
   function save(
     configuration: ProviderConfigurationValues
@@ -35,15 +45,27 @@ export function useProviderConfiguration() {
   }
 
   /**
-   * Menetapkan semula konfigurasi penyedia.
+   * Reset konfigurasi.
    */
-  function reset(providerId: string) {
+  function reset(
+    providerId: string
+  ) {
     return resetConfiguration(providerId);
+  }
+
+  /**
+   * Uji sambungan.
+   */
+  async function test(
+    request: ConnectionTestRequest
+  ) {
+    return testConnection(request);
   }
 
   return {
     load,
     save,
     reset,
+    test,
   };
 }

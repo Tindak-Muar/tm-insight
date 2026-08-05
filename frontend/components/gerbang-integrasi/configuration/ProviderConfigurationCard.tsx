@@ -8,10 +8,16 @@ import {
 } from "lucide-react";
 
 import { Provider } from "@/types/provider";
+import { ProviderRuntime } from "@/types/providerRuntime";
+import { ConnectionTestResult } from "@/types/connection";
+
+import { useProviderConfiguration } from "@/lib/hooks/useProviderConfiguration";
 
 import ConnectionStatusBadge from "./ConnectionStatusBadge";
-import ConfigurationDialog from "../ConfigurationDialog";
 import ApiHealthBadge from "./ApiHealthBadge";
+
+import ConfigurationDialog from "../ConfigurationDialog";
+import ConnectionResultDialog from "../connection/ConnectionResultDialog";
 
 interface ProviderConfigurationCardProps {
   provider: Provider;
@@ -21,7 +27,64 @@ export default function ProviderConfigurationCard({
   provider,
 }: ProviderConfigurationCardProps) {
 
+  const { test } = useProviderConfiguration();
+
   const [open, setOpen] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const [resultOpen, setResultOpen] = useState(false);
+
+  const [result, setResult] =
+    useState<ConnectionTestResult | null>(null);
+
+  const [runtime, setRuntime] =
+    useState<ProviderRuntime>({
+      connectionStatus: provider.connectionStatus,
+      apiHealth: provider.apiHealth,
+    });
+
+  async function handleTestConnection() {
+
+    try {
+
+      setLoading(true);
+
+      const connectionResult = await test({
+        providerId: provider.id,
+      });
+
+      setResult(connectionResult);
+
+      if (connectionResult.success) {
+
+        setRuntime({
+          connectionStatus: "disambungkan",
+          apiHealth: "normal",
+          lastTestedAt: connectionResult.testedAt,
+          responseTime: connectionResult.duration,
+        });
+
+      } else {
+
+        setRuntime({
+          connectionStatus: "ralat",
+          apiHealth: "kritikal",
+          lastTestedAt: connectionResult.testedAt,
+          responseTime: connectionResult.duration,
+        });
+
+      }
+
+      setResultOpen(true);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
 
   return (
     <>
@@ -42,7 +105,7 @@ export default function ProviderConfigurationCard({
           </div>
 
           <ConnectionStatusBadge
-            status={provider.connectionStatus}
+            status={runtime.connectionStatus}
           />
 
         </div>
@@ -54,10 +117,40 @@ export default function ProviderConfigurationCard({
           </span>
 
           <ApiHealthBadge
-  health={provider.apiHealth}
-/>
+            health={runtime.apiHealth}
+          />
 
         </div>
+
+        {runtime.lastTestedAt && (
+
+          <div className="mt-4 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
+
+            <p className="font-medium text-gray-700">
+              Ujian Terakhir
+            </p>
+
+            <p>
+              {new Intl.DateTimeFormat(
+                "ms-MY",
+                {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                }
+              ).format(runtime.lastTestedAt)}
+            </p>
+
+            {runtime.responseTime !== undefined && (
+
+              <p className="mt-1">
+                Masa Respon: {runtime.responseTime} ms
+              </p>
+
+            )}
+
+          </div>
+
+        )}
 
         <div className="mt-6 flex gap-3">
 
@@ -69,15 +162,21 @@ export default function ProviderConfigurationCard({
             <Settings className="h-4 w-4" />
 
             Konfigurasi
+
           </button>
 
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50"
+            onClick={handleTestConnection}
+            disabled={loading}
+            className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Activity className="h-4 w-4" />
 
-            Uji Sambungan
+            {loading
+              ? "Menguji..."
+              : "Uji Sambungan"}
+
           </button>
 
         </div>
@@ -88,6 +187,12 @@ export default function ProviderConfigurationCard({
         providerId={provider.id}
         open={open}
         onClose={() => setOpen(false)}
+      />
+
+      <ConnectionResultDialog
+        open={resultOpen}
+        result={result}
+        onClose={() => setResultOpen(false)}
       />
 
     </>

@@ -24,6 +24,9 @@ import {
  *
  * Sprint 3:
  * Belum membuat panggilan API sebenar.
+ *
+ * Sprint 4:
+ * Akan menggunakan OpenAI Responses API.
  */
 export const openAIAdapter: ProviderAdapter = {
   providerId: "openai",
@@ -34,24 +37,32 @@ export const openAIAdapter: ProviderAdapter = {
   async testConnection(
     request: ConnectionTestRequest
   ): Promise<ConnectionTestResult> {
-    console.log(
-      `[OpenAI Adapter] Testing ${request.providerId}...`
+
+    console.info(
+      `[OpenAI Adapter] Testing connection (${request.providerId})`
     );
+
+    const startedAt = performance.now();
 
     // Simulasi kelewatan rangkaian
     await new Promise((resolve) =>
       setTimeout(resolve, 500)
     );
 
+    const duration = Math.round(
+      performance.now() - startedAt
+    );
+
     return {
       success: true,
       status: "success",
-      message: "Mock connection successful.",
+      message:
+        "Berjaya menyambung ke pelayan OpenAI (Mock).",
       testedAt: new Date(),
-      duration: 500,
+      duration,
       details: {
         provider: "OpenAI",
-        mode: "mock",
+        mode: "Mock",
       },
     };
   },
@@ -62,20 +73,24 @@ export const openAIAdapter: ProviderAdapter = {
   async validateConfiguration(
     configuration: ProviderConfigurationValues
   ): Promise<boolean> {
-    const apiKey = configuration.values["apiKey"];
+
+    const apiKey = configuration.values.apiKey;
 
     return (
       typeof apiKey === "string" &&
       apiKey.trim().length > 0
     );
+
   },
 
   /**
    * Putuskan sambungan.
    */
   async disconnect(): Promise<void> {
-    console.log(
-      "[OpenAI Adapter] Disconnected."
+
+    console.info(
+      "[OpenAI Adapter] Connection closed."
     );
+
   },
 };
