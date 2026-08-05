@@ -32,15 +32,18 @@
 
 ## v0.8.0
 
-### Sprint 3 - Gerbang Integrasi
+### Sprint 3 — Gerbang Integrasi
 
-- Provider Configuration Engine
+#### Baharu
+- Enjin Konfigurasi Penyedia
 - Configuration Registry
 - Configuration Store
 - Validation Service
 - Adapter Pattern
 - Adapter Registry
 - Mock OpenAI Adapter
-- Connection Testing
-- Connection Result Dialog
+- Dialog Konfigurasi
+- Ujian Sambungan
+- Dialog Keputusan Sambungan
 - Live Status Update
+- Navigasi daripada Gerbang Integrasi ke halaman konfigurasi
